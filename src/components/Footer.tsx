@@ -1,8 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import { EnvelopeIcon } from '@heroicons/react/24/solid';
-import { LinkIcon } from '@heroicons/react/24/outline';
+import { FaGithub, FaLinkedin, FaEnvelope, FaLink } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   return (
@@ -52,7 +50,7 @@ const Footer: React.FC = () => {
               whileHover={{ scale: 1.1 }}
               className="p-3 rounded-full bg-red-500/10 hover:bg-red-500/20 transition-colors"
             >
-              <EnvelopeIcon className="w-6 h-6" />
+              <FaEnvelope className="w-6 h-6" />
             </motion.a>
           </motion.div>
 

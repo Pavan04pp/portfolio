@@ -1,42 +1,42 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { 
-  CodeBracketIcon,
-  CommandLineIcon,
-  CpuChipIcon,
-  CodeBracketSquareIcon,
-  DocumentTextIcon,
-  PaintBrushIcon,
-  ServerIcon,
-  CircleStackIcon,
-  TableCellsIcon,
-  ChartBarIcon
-} from '@heroicons/react/24/solid';
+  FaCode,
+  FaTerminal,
+  FaMicrochip,
+  FaCodeBranch,
+  FaFileAlt,
+  FaPalette,
+  FaServer,
+  FaDatabase,
+  FaTable,
+  FaChartBar
+} from 'react-icons/fa';
 
 const skillCategories = [
   {
     title: "Programming Languages",
     skills: [
-      { name: "Python", level: 90, icon: CommandLineIcon },
-      { name: "C++", level: 85, icon: CodeBracketIcon },
-      { name: "C#", level: 80, icon: CpuChipIcon },
-      { name: "JavaScript", level: 85, icon: CodeBracketSquareIcon },
+      { name: "Python", level: 90, icon: FaTerminal },
+      { name: "C++", level: 85, icon: FaCode },
+      { name: "C#", level: 80, icon: FaMicrochip },
+      { name: "JavaScript", level: 85, icon: FaCodeBranch },
     ]
   },
   {
     title: "Web Development",
     skills: [
-      { name: "HTML", level: 90, icon: DocumentTextIcon },
-      { name: "CSS", level: 85, icon: PaintBrushIcon },
-      { name: "Django", level: 75, icon: ServerIcon },
+      { name: "HTML", level: 90, icon: FaFileAlt },
+      { name: "CSS", level: 85, icon: FaPalette },
+      { name: "Django", level: 75, icon: FaServer },
     ]
   },
   {
     title: "AI & ML Tools",
     skills: [
-      { name: "PyTorch", level: 70, icon: CircleStackIcon },
-      { name: "NumPy", level: 80, icon: TableCellsIcon },
-      { name: "Pandas", level: 75, icon: ChartBarIcon },
+      { name: "PyTorch", level: 70, icon: FaDatabase },
+      { name: "NumPy", level: 80, icon: FaTable },
+      { name: "Pandas", level: 75, icon: FaChartBar },
     ]
   }
 ];

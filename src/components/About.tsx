@@ -1,14 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { 
-  EnvelopeIcon, 
-  CodeBracketIcon, 
-  CpuChipIcon, 
-  ComputerDesktopIcon, 
-  RocketLaunchIcon, 
-  ArrowDownTrayIcon 
-} from '@heroicons/react/24/solid';
+  FaGithub, 
+  FaLinkedin, 
+  FaEnvelope, 
+  FaCode, 
+  FaMicrochip, 
+  FaDesktop, 
+  FaRocket, 
+  FaDownload 
+} from 'react-icons/fa';
 import { SiPython, SiCplusplus, SiSharp } from 'react-icons/si';
 
 const ProfileCard: React.FC = () => {
@@ -262,7 +263,7 @@ const TemplateModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
               type="submit"
               className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors flex items-center gap-2"
             >
-              <ArrowDownTrayIcon className="w-6 h-6" />
+              <FaDownload className="w-6 h-6" />
               Download Template
             </button>
           </div>
@@ -361,17 +362,17 @@ const About: React.FC = () => {
                 <h3 className="text-2xl font-bold mb-6 premium-text">Skills & Expertise</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <SkillCard
-                    icon={<CodeBracketIcon className="w-6 h-6" />}
+                    icon={<FaCode className="w-6 h-6" />}
                     title="Programming"
                     description="Python, C++, C#"
                   />
                   <SkillCard
-                    icon={<CpuChipIcon className="w-6 h-6" />}
+                    icon={<FaMicrochip className="w-6 h-6" />}
                     title="AI & ML"
                     description="PyTorch, NumPy, Pandas"
                   />
                   <SkillCard
-                    icon={<ComputerDesktopIcon className="w-6 h-6" />}
+                    icon={<FaDesktop className="w-6 h-6" />}
                     title="Web Dev"
                     description="HTML, CSS, JavaScript, Django"
                   />
@@ -399,7 +400,7 @@ const About: React.FC = () => {
                   whileHover={{ scale: 1.1 }}
                   className="p-3 rounded-full bg-red-500/10 hover:bg-red-500/20 transition-colors"
                 >
-                  <EnvelopeIcon className="w-6 h-6" />
+                  <FaEnvelope className="w-6 h-6" />
                 </motion.a>
               </motion.div>
 
@@ -416,7 +417,7 @@ const About: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-6 py-3 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors flex items-center gap-2"
                 >
-                  <ArrowDownTrayIcon className="w-6 h-6" />
+                  <FaDownload className="w-6 h-6" />
                   Make Your Portfolio
                 </motion.button>
               </motion.div>

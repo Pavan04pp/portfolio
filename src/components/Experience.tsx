@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CodeBracketIcon, CommandLineIcon, CpuChipIcon } from '@heroicons/react/24/solid';
+import { FaCode, FaTerminal, FaMicrochip } from 'react-icons/fa';
 import { SiCplusplus } from 'react-icons/si';
 
 const Experience: React.FC = () => {
@@ -41,7 +41,7 @@ const Experience: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
             <div className="relative p-8 rounded-lg bg-black/50 backdrop-blur-sm border border-blue-500/20 hover:border-blue-500/40 transition-colors duration-300">
               <div className="text-blue-500 mb-6 text-4xl">
-                <CodeBracketIcon className="w-8 h-8 text-blue-500 mb-4" />
+                <FaCode className="w-8 h-8 text-blue-500 mb-4" />
               </div>
               <h3 className="text-2xl font-bold mb-4 premium-text">Beginning of Coding</h3>
               <p className="text-gray-300 mb-4">
@@ -65,7 +65,7 @@ const Experience: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-purple-500 rounded-lg blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
             <div className="relative p-8 rounded-lg bg-black/50 backdrop-blur-sm border border-red-500/20 hover:border-red-500/40 transition-colors duration-300">
               <div className="text-red-500 mb-6 text-4xl">
-                <CpuChipIcon className="w-8 h-8 text-red-500 mb-4" />
+                <FaMicrochip className="w-8 h-8 text-red-500 mb-4" />
               </div>
               <h3 className="text-2xl font-bold mb-4 premium-text">AI & ML Discovery</h3>
               <p className="text-gray-300 mb-4">
@@ -94,12 +94,12 @@ const Experience: React.FC = () => {
             <p className="text-gray-400">Strong foundation in programming concepts</p>
           </div>
           <div className="p-6 rounded-lg bg-black/30 border border-gray-800/50 hover:border-green-500/30 transition-colors duration-300">
-            <CommandLineIcon className="w-8 h-8 text-green-500 mb-4" />
+            <FaTerminal className="w-8 h-8 text-green-500 mb-4" />
             <h4 className="text-xl font-bold mb-2 premium-text">Python</h4>
             <p className="text-gray-400">AI/ML development and data science</p>
           </div>
           <div className="p-6 rounded-lg bg-black/30 border border-gray-800/50 hover:border-purple-500/30 transition-colors duration-300">
-            <CpuChipIcon className="w-8 h-8 text-purple-500 mb-4" />
+            <FaMicrochip className="w-8 h-8 text-purple-500 mb-4" />
             <h4 className="text-xl font-bold mb-2 premium-text">AI/ML</h4>
             <p className="text-gray-400">Exploring machine learning algorithms</p>
           </div>
