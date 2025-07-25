@@ -1,42 +1,42 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { 
-  FaCode,
-  FaTerminal,
-  FaMicrochip,
-  FaCodeBranch,
-  FaFileAlt,
-  FaPalette,
-  FaServer,
-  FaDatabase,
-  FaTable,
-  FaChartBar
-} from 'react-icons/fa';
+  SiPython, 
+  SiCplusplus, 
+  SiSharp, 
+  SiJavascript,
+  SiHtml5,
+  SiCss3,
+  SiDjango,
+  SiPytorch,
+  SiNumpy,
+  SiPandas
+} from 'react-icons/si';
 
 const skillCategories = [
   {
     title: "Programming Languages",
     skills: [
-      { name: "Python", level: 90, icon: FaTerminal },
-      { name: "C++", level: 85, icon: FaCode },
-      { name: "C#", level: 80, icon: FaMicrochip },
-      { name: "JavaScript", level: 85, icon: FaCodeBranch },
+      { name: "Python", level: 90, icon: SiPython },
+      { name: "C++", level: 85, icon: SiCplusplus },
+      { name: "C#", level: 80, icon: SiSharp },
+      { name: "JavaScript", level: 85, icon: SiJavascript },
     ]
   },
   {
     title: "Web Development",
     skills: [
-      { name: "HTML", level: 90, icon: FaFileAlt },
-      { name: "CSS", level: 85, icon: FaPalette },
-      { name: "Django", level: 75, icon: FaServer },
+      { name: "HTML", level: 90, icon: SiHtml5 },
+      { name: "CSS", level: 85, icon: SiCss3 },
+      { name: "Django", level: 75, icon: SiDjango },
     ]
   },
   {
     title: "AI & ML Tools",
     skills: [
-      { name: "PyTorch", level: 70, icon: FaDatabase },
-      { name: "NumPy", level: 80, icon: FaTable },
-      { name: "Pandas", level: 75, icon: FaChartBar },
+      { name: "PyTorch", level: 70, icon: SiPytorch },
+      { name: "NumPy", level: 80, icon: SiNumpy },
+      { name: "Pandas", level: 75, icon: SiPandas },
     ]
   }
 ];

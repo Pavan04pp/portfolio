@@ -9,6 +9,9 @@ import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
+import ChatBot from './components/ChatBot';
+import EsportsDesignServices from './components/EsportsDesignServices';
+import Works from './components/Works';
 
 const projects = [
   {
@@ -78,6 +81,22 @@ const App: React.FC = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
+        >
+          <EsportsDesignServices />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          <Works />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
         >
           <section id="projects" className="mb-16">
@@ -113,6 +132,7 @@ const App: React.FC = () => {
           <Footer />
         </motion.div>
       </main>
+      <ChatBot />
     </div>
   );
 };
