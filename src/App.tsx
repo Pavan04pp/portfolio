@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import ChatBot from './components/ChatBot';
 import EsportsDesignServices from './components/EsportsDesignServices';
+import WorksSection from './sections/WorksSection';
 
 
 const projects = [
@@ -86,11 +87,18 @@ const App: React.FC = () => {
           <EsportsDesignServices />
         </motion.div>
 
-
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          <WorksSection />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.9 }}
         >
           <section id="projects" className="mb-16">
             <h2 className="text-4xl font-bold mb-8">Projects</h2>
@@ -112,7 +120,7 @@ const App: React.FC = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.0 }}
+          transition={{ duration: 0.5, delay: 1.1 }}
         >
           <Contact />
         </motion.div>
@@ -120,7 +128,7 @@ const App: React.FC = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
+          transition={{ duration: 0.5, delay: 1.3 }}
         >
           <Footer />
         </motion.div>
