@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import ChatBot from './components/ChatBot';
 import EsportsDesignServices from './components/EsportsDesignServices';
+import EditingPaid from './components/EditingPaid';
 
 
 const projects = [
@@ -84,6 +85,14 @@ const App: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.7 }}
         >
           <EsportsDesignServices />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.75 }}
+        >
+          <EditingPaid />
         </motion.div>
 
 
