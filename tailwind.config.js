@@ -3,6 +3,8 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  // use class-based dark mode so we can force `dark` on the root
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {

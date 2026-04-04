@@ -1,105 +1,112 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes } from 'react-icons/fa';
+
+const navItems = [
+  { name: 'home', href: '#home' },
+  { name: 'about', href: '#about' },
+  { name: 'skills', href: '#skills' },
+  { name: 'experience', href: '#experience' },
+  { name: 'education', href: '#education' },
+  { name: 'projects', href: '#projects' },
+  { name: 'contact', href: '#contact' },
+];
 
 const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const fn = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Education', href: '#education' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Esports & Design', href: '#esports-design' },
-    { name: 'Works', href: '#works' },
-  ];
-
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-black/80 backdrop-blur-md' : 'bg-transparent'
-      }`}
+    <nav
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        background: scrolled ? 'rgba(5,8,16,0.85)' : 'rgba(5,8,16,0.5)',
+        borderBottom: '1px solid rgba(79,142,247,0.08)',
+        transition: 'background 0.3s',
+      }}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <motion.a
-            href="#home"
-            className="text-2xl font-bold premium-text"
-            whileHover={{ scale: 1.05 }}
-          >
-            PK
-          </motion.a>
+      <div style={{
+        maxWidth: 1200, margin: '0 auto', padding: '0 1.5rem',
+        display: 'flex', alignItems: 'center', height: 64, gap: '2rem'
+      }}>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <motion.a
-                key={item.name}
-                href={item.href}
-                className="text-gray-300 hover:text-white transition-colors relative group"
-                whileHover={{ scale: 1.05 }}
-              >
-                {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-500 group-hover:w-full transition-all duration-300" />
-              </motion.a>
-            ))}
-          </div>
+        {/* Logo */}
+        <a href="#home" style={{
+          fontFamily: 'var(--font-head)', fontWeight: 800, fontSize: '1.35rem',
+          background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text', textDecoration: 'none', flexShrink: 0,
+        }}>PK</a>
 
-          {/* Mobile Navigation Button */}
-          <motion.button
-            className="md:hidden text-gray-300 hover:text-white transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            {isOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
-          </motion.button>
+        {/* Center nav links – desktop */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '2rem' }}
+          className="nav-links-desktop">
+          {navItems.map(it => (
+            <a key={it.name} href={it.href} style={{
+              fontFamily: 'var(--font-mono)', fontSize: '0.62rem',
+              letterSpacing: '0.18em', textTransform: 'uppercase',
+              color: 'var(--muted)', textDecoration: 'none',
+              transition: 'color 0.2s',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted)')}
+            >{it.name}</a>
+          ))}
         </div>
+
+        {/* Right: availability badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}
+          className="availability-badge">
+          <div className="pulse-dot" />
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: '0.6rem',
+            letterSpacing: '0.1em', color: 'var(--green)',
+          }}>available for opportunities</span>
+        </div>
+
+        {/* Mobile hamburger */}
+        <button onClick={() => setOpen(o => !o)} style={{
+          display: 'none', background: 'none', border: 'none',
+          color: 'var(--muted)', fontSize: '1.3rem', padding: '0.25rem',
+        }} className="nav-hamburger">☰</button>
       </div>
 
-      {/* Mobile Navigation Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-black/95 backdrop-blur-md"
-          >
-            <div className="container mx-auto px-4 py-4">
-              <div className="flex flex-col space-y-4">
-                {navItems.map((item) => (
-                  <motion.a
-                    key={item.name}
-                    href={item.href}
-                    className="text-gray-300 hover:text-white transition-colors py-2"
-                    whileHover={{ x: 10 }}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </motion.a>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+      {/* Mobile menu */}
+      {open && (
+        <div style={{
+          background: 'rgba(5,8,16,0.97)', padding: '1rem 1.5rem',
+          borderTop: '1px solid rgba(79,142,247,0.08)',
+          display: 'flex', flexDirection: 'column', gap: '1rem',
+        }}>
+          {navItems.map(it => (
+            <a key={it.name} href={it.href}
+              onClick={() => setOpen(false)}
+              style={{
+                fontFamily: 'var(--font-mono)', fontSize: '0.7rem',
+                letterSpacing: '0.15em', textTransform: 'uppercase',
+                color: 'var(--muted)', textDecoration: 'none',
+              }}>
+              {it.name}
+            </a>
+          ))}
+        </div>
+      )}
+
+      <style>{`
+        @media (max-width: 768px) {
+          .nav-links-desktop { display: none !important; }
+          .availability-badge { display: none !important; }
+          .nav-hamburger { display: block !important; }
+        }
+      `}</style>
+    </nav>
   );
 };
 
-export default Navbar; 
+export default Navbar;

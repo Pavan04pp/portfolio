@@ -1,7 +1,4 @@
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import AnimatedText from './components/AnimatedText';
-import ProjectCard from './components/ProjectCard';
+import React, { useEffect, useRef, useState } from 'react';
 import About from './components/About';
 import Experience from './components/Experience';
 import Education from './components/Education';
@@ -10,131 +7,158 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import ChatBot from './components/ChatBot';
-import EsportsDesignServices from './components/EsportsDesignServices';
-import Works from './components/Works';
+import WorksCarousel from './components/WorksCarousel';
+import AnimatedBackground from './components/AnimatedBackground';
+import LeetCodeStats from './components/LeetCodeStats';
+import HeroSection from './components/HeroSection';
+import CustomCursor from './components/CustomCursor';
+import ScrollProgress from './components/ScrollProgress';
 
-const projects = [
+/* ─── Real Projects ─────────────────────────────────────────────────────── */
+const PROJECTS = [
   {
-    title: 'Project 1',
-    description: 'A brief description of project 1',
-    technologies: ['React', 'TypeScript', 'Tailwind CSS'],
-    image: '/project1.jpg',
-    link: '#'
+    category: 'AI Tool',
+    title: 'LegalEase AI',
+    description:
+      'Simplify legal documents with fast, AI-powered summaries, risk analysis and key-clause detection. Upload PDFs or text to get instant insights — secure and privacy-first.',
+    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Gemini AI', 'Firebase'],
+    link: 'https://legalease-ai-swart.vercel.app/',
   },
-  {
-    title: 'Project 2',
-    description: 'A brief description of project 2',
-    technologies: ['Node.js', 'Express', 'MongoDB'],
-    image: '/project2.jpg',
-    link: '#'
-  },
-  {
-    title: 'Project 3',
-    description: 'A brief description of project 3',
-    technologies: ['Python', 'Django', 'PostgreSQL'],
-    image: '/project3.jpg',
-    link: '#'
-  }
 ];
 
-const App: React.FC = () => {
-  const aboutRef = useRef(null);
-  const isAboutInView = useInView(aboutRef, { once: true });
+/* ─── Projects Section ───────────────────────────────────────────────────── */
+const ProjectsSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [vis, setVis] = useState(false);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.1 });
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <div className="bg-black min-h-screen text-white">
-      <Navbar />
-      <main className="container mx-auto px-4 py-8">
-        <motion.div
-          ref={aboutRef}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <About />
-        </motion.div>
+    <section id="projects" ref={sectionRef} style={{ padding: '6rem 1.5rem', position: 'relative', zIndex: 1 }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <span className="section-label">What I've Built</span>
+        <h2 style={{
+          fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '3rem',
+          opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(24px)',
+          transition: 'opacity 0.6s ease, transform 0.6s ease',
+        }}>Projects</h2>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Experience />
-        </motion.div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+          gap: '1.5rem',
+        }}>
+          {PROJECTS.map((project, i) => (
+            <div key={project.title} className="project-card" style={{
+              opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(28px)',
+              transition: `opacity 0.6s ease ${i * 0.12}s, transform 0.6s ease ${i * 0.12}s`,
+            }}>
+              {/* Top row: category + arrow link */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                <span style={{
+                  fontFamily: 'var(--font-mono)', fontSize: '0.62rem', letterSpacing: '0.12em',
+                  textTransform: 'uppercase', color: 'var(--green)',
+                  display: 'flex', alignItems: 'center', gap: '0.4rem',
+                }}>
+                  <span style={{ color: 'var(--muted)' }}>—</span> {project.category}
+                </span>
+                <a href={project.link} target="_blank" rel="noopener noreferrer" style={{
+                  fontFamily: 'var(--font-mono)', fontSize: '1rem', color: 'var(--muted)',
+                  textDecoration: 'none', lineHeight: 1,
+                  transition: 'color 0.2s',
+                }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted)')}
+                >↗</a>
+              </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <Education />
-        </motion.div>
+              <h3 style={{
+                fontFamily: 'var(--font-head)', fontWeight: 800,
+                fontSize: '1.4rem', color: 'var(--text)', marginBottom: '0.75rem'
+              }}>
+                {project.title}
+              </h3>
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: '0.88rem',
+                color: 'var(--text-dim)', lineHeight: 1.7, marginBottom: '1.5rem'
+              }}>
+                {project.description}
+              </p>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <Skills />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        >
-          <EsportsDesignServices />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-        >
-          <Works />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-        >
-          <section id="projects" className="mb-16">
-            <h2 className="text-4xl font-bold mb-8">Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.map((project, index) => (
-                <ProjectCard
-                  key={project.title}
-                  title={project.title}
-                  description={project.description}
-                  technologies={project.technologies}
-                  image={project.image}
-                  link={project.link}
-                />
-              ))}
+              {/* Stack tags */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                {project.stack.map(tech => (
+                  <span key={tech} className="tag tag-blue">{tech}</span>
+                ))}
+              </div>
             </div>
-          </section>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.0 }}
-        >
-          <Contact />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
-        >
-          <Footer />
-        </motion.div>
-      </main>
-      <ChatBot />
-    </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
-export default App; 
+/* ─── LeetCode Section ───────────────────────────────────────────────────── */
+const LeetCodeSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [vis, setVis] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.1 });
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section id="leetcode" ref={sectionRef} style={{ padding: '6rem 1.5rem', position: 'relative', zIndex: 1 }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <span className="section-label">Competitive Coding</span>
+        <h2 style={{
+          fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '3rem',
+          opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(24px)',
+          transition: 'opacity 0.6s ease, transform 0.6s ease',
+        }}>Coding Challenge Progress</h2>
+        <LeetCodeStats />
+      </div>
+    </section>
+  );
+};
+
+/* ─── App ────────────────────────────────────────────────────────────────── */
+const App: React.FC = () => (
+  <div style={{ position: 'relative', minHeight: '100vh' }}>
+    <AnimatedBackground />
+    <CustomCursor />
+    <Navbar />
+    <ScrollProgress />
+
+    <main>
+      <HeroSection />
+      <div className="section-divider" />
+      <About />
+      <div className="section-divider" />
+      <Skills />
+      <div className="section-divider" />
+      <Experience />
+      <div className="section-divider" />
+      <Education />
+      <div className="section-divider" />
+      <LeetCodeSection />
+      <div className="section-divider" />
+      <WorksCarousel />
+      <div className="section-divider" />
+      <ProjectsSection />
+      <div className="section-divider" />
+      <Contact />
+      <Footer />
+    </main>
+
+    <ChatBot />
+  </div>
+);
+
+export default App;

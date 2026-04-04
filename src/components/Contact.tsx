@@ -1,128 +1,74 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import AnimatedText from './AnimatedText';
+import React, { useRef, useEffect, useState } from 'react';
+
+const LINKS = [
+  { label: 'pavankumarkm@gmail.com', href: 'mailto:pavankumarkm@gmail.com', icon: '✉' },
+  { label: 'github.com/Pavan04pp', href: 'https://github.com/Pavan04pp', icon: '↗' },
+  { label: 'LinkedIn Profile', href: 'https://www.linkedin.com/in/pavankumarkm/', icon: '↗' },
+];
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
+  const sectionRef = useRef<HTMLElement>(null);
+  const [vis, setVis] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would typically send the form data to a backend service
-    alert('Message Sent! (Check console for data)');
-    setFormData({
-      name: '',
-      email: '',
-      message: '',
-    });
-  };
-
-  const inputVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.2 });
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <motion.section
-      id="contact"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="min-h-screen py-20 flex items-center justify-center"
-    >
-      <div className="container mx-auto px-4">
-        <AnimatedText
-          text="Get In Touch"
-          className="text-4xl font-bold mb-4 text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
-        />
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-lg text-gray-300 mb-12 text-center"
-        >
-          Have a question or want to work together? Send me a message.
-        </motion.p>
+    <section id="contact" ref={sectionRef} style={{
+      padding: '8rem 1.5rem', position: 'relative', zIndex: 1, textAlign: 'center',
+    }}>
+      <div style={{ maxWidth: 650, margin: '0 auto' }}>
+        <span className="section-label" style={{ display: 'block', textAlign: 'center', marginBottom: '1rem' }}>
+          Let's Connect
+        </span>
 
-        <motion.form
-          onSubmit={handleSubmit}
-          className="max-w-xl mx-auto bg-gray-900 p-8 rounded-xl shadow-2xl space-y-6"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
-        >
-          <motion.div variants={inputVariants}>
-            <label htmlFor="name" className="block text-gray-300 text-sm font-bold mb-2">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-800 transition-colors"
-              placeholder="Your name..."
-              required
-            />
-          </motion.div>
+        <h2 style={{
+          fontSize: 'clamp(2.2rem, 6vw, 4rem)', marginBottom: '1rem',
+          opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(24px)',
+          transition: 'opacity 0.6s ease, transform 0.6s ease',
+        }}>
+          Get In <span className="gradient-text">Touch</span>
+        </h2>
 
-          <motion.div variants={inputVariants}>
-            <label htmlFor="email" className="block text-gray-300 text-sm font-bold mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-800 transition-colors"
-              placeholder="your.email@example.com"
-              required
-            />
-          </motion.div>
+        <p style={{
+          fontFamily: 'var(--font-body)', color: 'var(--text-dim)', fontSize: '1rem',
+          lineHeight: 1.7, marginBottom: '3rem',
+          opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(16px)',
+          transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
+        }}>
+          Have a question or want to work together? I'm always open to new opportunities and interesting conversations.
+        </p>
 
-          <motion.div variants={inputVariants}>
-            <label htmlFor="message" className="block text-gray-300 text-sm font-bold mb-2">
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              rows={5}
-              className="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-800 transition-colors resize-none"
-              placeholder="Your message here..."
-              required
-            ></textarea>
-          </motion.div>
-
-          <motion.div variants={inputVariants}>
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline hover:opacity-90 transition-opacity"
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center',
+          opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(16px)',
+          transition: 'opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s',
+        }}>
+          {LINKS.map(link => (
+            <a
+              key={link.href}
+              href={link.href}
+              target={link.href.startsWith('http') ? '_blank' : undefined}
+              rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="pill-btn"
             >
-              Send Message
-            </motion.button>
-          </motion.div>
-        </motion.form>
+              <span>{link.icon}</span>
+              <span>{link.label}</span>
+            </a>
+          ))}
+        </div>
       </div>
-    </motion.section>
+
+      {/* Background glow */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(124,92,252,0.05), transparent)',
+      }} />
+    </section>
   );
 };
 
-export default Contact; 
+export default Contact;
