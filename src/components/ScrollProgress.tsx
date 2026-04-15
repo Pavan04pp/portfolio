@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaArrowUp } from 'react-icons/fa';
-import { useTheme } from '../context/ThemeContext';
 
 const ScrollProgress: React.FC = () => {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
-    const { theme } = useTheme();
-    const isLight = theme === 'light';
 
     useEffect(() => {
         const updateScrollProgress = () => {
@@ -34,13 +31,13 @@ const ScrollProgress: React.FC = () => {
             <button onClick={scrollToTop} className="relative group" aria-label="Scroll to top" style={{ cursor: 'pointer' }}>
                 <svg className="w-14 h-14 transform -rotate-90" viewBox="0 0 48 48">
                     <circle cx="24" cy="24" r="20"
-                        fill={isLight ? 'white' : '#111827'}
-                        stroke={isLight ? '#CBD5E1' : 'rgba(255,255,255,0.08)'}
+                        fill="#111113"
+                        stroke="rgba(255,255,255,0.06)"
                         strokeWidth="3" />
                     <defs>
                         <linearGradient id="progressGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stopColor={isLight ? "#4F46E5" : "#06b6d4"} />
-                            <stop offset="100%" stopColor={isLight ? "#06B6D4" : "#8b5cf6"} />
+                            <stop offset="0%" stopColor="#e2b96f" />
+                            <stop offset="100%" stopColor="#c084fc" />
                         </linearGradient>
                     </defs>
                     <motion.circle cx="24" cy="24" r="20" fill="none" stroke="url(#progressGrad)" strokeWidth="3" strokeLinecap="round"
@@ -48,7 +45,7 @@ const ScrollProgress: React.FC = () => {
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
                     <FaArrowUp className="w-5 h-5 transition-colors duration-300"
-                        style={{ color: isLight ? '#4F46E5' : '#FFFFFF' }} />
+                        style={{ color: '#e2b96f' }} />
                 </div>
             </button>
         </motion.div>

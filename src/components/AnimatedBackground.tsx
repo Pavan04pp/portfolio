@@ -6,6 +6,7 @@ interface Dot {
   vx: number;
   vy: number;
   r: number;
+  opacity: number;
 }
 
 const AnimatedBackground: React.FC = () => {
@@ -17,10 +18,8 @@ const AnimatedBackground: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const DOT_COUNT = 80;
-    const CONNECT_DIST = 160;
-    const DOT_COLOR = 'rgba(79,142,247,0.55)';
-    const LINE_COLOR_BASE = 'rgba(79,142,247,';
+    const DOT_COUNT = 60;
+    const CONNECT_DIST = 150;
     const dots: Dot[] = [];
 
     const resize = () => {
@@ -34,9 +33,10 @@ const AnimatedBackground: React.FC = () => {
       dots.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        r: Math.random() * 1.8 + 0.8,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        r: Math.random() * 1.5 + 0.5,
+        opacity: Math.random() * 0.2 + 0.1,
       });
     }
 
@@ -45,7 +45,6 @@ const AnimatedBackground: React.FC = () => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Move dots
       for (const d of dots) {
         d.x += d.vx;
         d.y += d.vy;
@@ -53,17 +52,17 @@ const AnimatedBackground: React.FC = () => {
         if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
       }
 
-      // Draw connections
+      // Connections with warm tones
       for (let i = 0; i < dots.length; i++) {
         for (let j = i + 1; j < dots.length; j++) {
           const dx = dots[i].x - dots[j].x;
           const dy = dots[i].y - dots[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < CONNECT_DIST) {
-            const alpha = (1 - dist / CONNECT_DIST) * 0.4;
+            const alpha = (1 - dist / CONNECT_DIST) * 0.12;
             ctx.beginPath();
-            ctx.strokeStyle = `${LINE_COLOR_BASE}${alpha})`;
-            ctx.lineWidth = 0.7;
+            ctx.strokeStyle = `rgba(226,185,111,${alpha})`;
+            ctx.lineWidth = 0.5;
             ctx.moveTo(dots[i].x, dots[i].y);
             ctx.lineTo(dots[j].x, dots[j].y);
             ctx.stroke();
@@ -71,11 +70,11 @@ const AnimatedBackground: React.FC = () => {
         }
       }
 
-      // Draw dots
+      // Dots
       for (const d of dots) {
         ctx.beginPath();
         ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        ctx.fillStyle = DOT_COLOR;
+        ctx.fillStyle = `rgba(226,185,111,${d.opacity})`;
         ctx.fill();
       }
 
@@ -99,6 +98,7 @@ const AnimatedBackground: React.FC = () => {
         width: '100%', height: '100%',
         zIndex: 0,
         pointerEvents: 'none',
+        opacity: 0.5,
       }}
     />
   );

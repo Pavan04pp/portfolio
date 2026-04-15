@@ -36,8 +36,8 @@ function useTypewriter(words: string[], speed = 60, pause = 1800) {
 /* ── Stats count-up ─────────────────────────────────────────────── */
 const STATS = [
     { value: 3, suffix: '+', label: 'Projects Built' },
-    { value: 10, suffix: '+', label: 'Technologies Mastered' },
-    { value: 236, suffix: '', label: 'LeetCode Problems' },
+    { value: 10, suffix: '+', label: 'Technologies' },
+    { value: 236, suffix: '', label: 'LeetCode Solved' },
 ];
 
 function useCountUp(target: number, active: boolean) {
@@ -58,7 +58,7 @@ function useCountUp(target: number, active: boolean) {
     return count;
 }
 
-const StatItem: React.FC<{ stat: (typeof STATS)[0]; active: boolean; delay: number }> = ({ stat, active, delay }) => {
+const StatItem: React.FC<{ stat: (typeof STATS)[0]; active: boolean; delay: number; idx: number }> = ({ stat, active, delay, idx }) => {
     const [started, setStarted] = useState(false);
     const count = useCountUp(stat.value, started);
     useEffect(() => {
@@ -68,17 +68,21 @@ const StatItem: React.FC<{ stat: (typeof STATS)[0]; active: boolean; delay: numb
     }, [active, delay]);
 
     return (
-        <div style={{ padding: '1.1rem 0', borderBottom: '1px solid rgba(79,142,247,0.1)' }}>
+        <div style={{
+            textAlign: 'center',
+            padding: '1.5rem 1rem',
+            borderRight: idx < 2 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+        }}>
             <div style={{
                 fontFamily: 'var(--font-head)', fontWeight: 800,
-                fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-                background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
+                fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+                background: 'linear-gradient(135deg, var(--accent), var(--rose))',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-                opacity: started ? 1 : 0, transition: 'opacity 0.4s',
+                opacity: started ? 1 : 0, transition: 'opacity 0.5s',
             }}>{count}{stat.suffix}</div>
             <div style={{
-                fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.12em',
-                textTransform: 'uppercase', color: 'var(--muted)', marginTop: '0.2rem',
+                fontFamily: 'var(--font-mono)', fontSize: '0.55rem', letterSpacing: '0.14em',
+                textTransform: 'uppercase', color: 'var(--muted)', marginTop: '0.35rem',
             }}>{stat.label}</div>
         </div>
     );
@@ -106,115 +110,138 @@ const HeroSection: React.FC = () => {
             position: 'relative', minHeight: '100vh',
             display: 'flex', alignItems: 'center',
             padding: '6rem 1.5rem 4rem', zIndex: 1,
+            overflow: 'hidden',
         }}>
+            {/* Ambient mesh gradients */}
+            <div style={{
+                position: 'absolute', top: '-20%', left: '-10%',
+                width: 700, height: 700,
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(226,185,111,0.06), transparent 70%)',
+                filter: 'blur(80px)',
+                pointerEvents: 'none',
+            }} />
+            <div style={{
+                position: 'absolute', bottom: '-10%', right: '-5%',
+                width: 500, height: 500,
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(192,132,252,0.04), transparent 70%)',
+                filter: 'blur(80px)',
+                pointerEvents: 'none',
+            }} />
+
             <div style={{
                 maxWidth: 1200, margin: '0 auto', width: '100%',
-                display: 'grid', gridTemplateColumns: '1fr auto', gap: '4rem', alignItems: 'center',
             }}>
+                {/* Eyebrow */}
+                <div className="section-label" style={{
+                    marginBottom: '1.25rem',
+                    opacity: visible ? 1 : 0,
+                    transition: 'opacity 0.5s ease',
+                }}>Hello, I'm</div>
 
-                {/* ── Left block ── */}
-                <div>
-                    {/* Eyebrow */}
-                    <div className="section-label" style={{ marginBottom: '1rem' }}>Hello, I'm</div>
+                {/* Big staggered name */}
+                <h1 style={{ overflow: 'hidden', lineHeight: 0.92, marginBottom: '1.5rem' }}>
+                    {lines.map((line, i) => (
+                        <div key={i} style={{ overflow: 'hidden' }}>
+                            <span style={{
+                                display: 'block',
+                                fontSize: 'clamp(3.5rem, 9vw, 7rem)',
+                                fontFamily: 'var(--font-head)', fontWeight: 800,
+                                transform: visible ? 'translateY(0)' : 'translateY(110%)',
+                                transition: `transform 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s`,
+                                ...(line.gradient ? {
+                                    background: 'linear-gradient(135deg, var(--accent) 0%, var(--rose) 50%, var(--accent2) 100%)',
+                                    backgroundSize: '200% 200%',
+                                    animation: 'gradient-shift 4s ease-in-out infinite alternate',
+                                    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                                } : { color: 'var(--text)' }),
+                            }}>{line.text}</span>
+                        </div>
+                    ))}
+                </h1>
 
-                    {/* Big staggered name */}
-                    <h1 style={{ overflow: 'hidden', lineHeight: 0.95, marginBottom: '1.25rem' }}>
-                        {lines.map((line, i) => (
-                            <div key={i} style={{ overflow: 'hidden' }}>
-                                <span style={{
-                                    display: 'block',
-                                    fontSize: 'clamp(3rem, 8vw, 6.5rem)',
-                                    fontFamily: 'var(--font-head)', fontWeight: 800,
-                                    transform: visible ? 'translateY(0)' : 'translateY(110%)',
-                                    transition: `transform 0.75s cubic-bezier(0.16,1,0.3,1) ${i * 0.12}s`,
-                                    ...(line.gradient ? {
-                                        background: 'linear-gradient(135deg, #4f8ef7 0%, #7c5cfc 50%, #00e5a0 100%)',
-                                        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-                                    } : { color: 'var(--text)' }),
-                                }}>{line.text}</span>
-                            </div>
-                        ))}
-                    </h1>
-
-                    {/* Typewriter role — warm accent color */}
-                    <div style={{
-                        fontFamily: 'var(--font-mono)', fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
-                        color: '#ffd77a',               /* warm yellow — distinct from blue/purple accent */
-                        letterSpacing: '0.04em', height: '1.6em',
-                        marginBottom: '1.5rem',
-                        opacity: visible ? 1 : 0,
-                        transition: 'opacity 0.6s ease 0.3s',
-                    }}>
-                        {role}<span style={{ animation: 'blink 1s step-end infinite', opacity: 1 }}>|</span>
-                    </div>
-
-                    {/* Subtitle */}
-                    <p style={{
-                        fontFamily: 'var(--font-body)', fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
-                        color: 'var(--muted)', maxWidth: 500, lineHeight: 1.75,
-                        opacity: visible ? 1 : 0,
-                        transform: visible ? 'none' : 'translateY(16px)',
-                        transition: 'opacity 0.7s ease 0.45s, transform 0.7s ease 0.45s',
-                        marginBottom: '2rem',
-                    }}>
-                        Computer Science student passionate about building innovative solutions
-                        with AI, web technologies, and creative problem-solving.
-                    </p>
-
-                    {/* CTAs */}
-                    <div style={{
-                        display: 'flex', flexWrap: 'wrap', gap: '1rem',
-                        opacity: visible ? 1 : 0,
-                        transform: visible ? 'none' : 'translateY(12px)',
-                        transition: 'opacity 0.7s ease 0.6s, transform 0.7s ease 0.6s',
-                        marginBottom: '2.5rem',
-                    }}>
-                        <a href="#projects" className="btn-filled">View My Work</a>
-                        <a href="#contact" className="btn-outlined">Get In Touch</a>
-                    </div>
-
-                    {/* Scroll hint */}
-                    <div style={{
-                        display: 'flex', alignItems: 'center', gap: '0.8rem',
-                        opacity: visible ? 1 : 0,
-                        transition: 'opacity 0.7s ease 0.8s',
-                    }}>
-                        <span style={{
-                            fontFamily: 'var(--font-mono)', fontSize: '0.58rem',
-                            letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--muted)',
-                        }}>scroll to explore</span>
-                        <div style={{ width: 48, height: 1, background: 'var(--muted)', opacity: 0.4 }} />
-                    </div>
+                {/* Typewriter role */}
+                <div style={{
+                    fontFamily: 'var(--font-mono)', fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
+                    color: 'var(--accent)',
+                    letterSpacing: '0.05em', height: '1.6em',
+                    marginBottom: '1.5rem',
+                    opacity: visible ? 1 : 0,
+                    transition: 'opacity 0.6s ease 0.25s',
+                }}>
+                    {role}<span style={{ animation: 'blink 1s step-end infinite', color: 'var(--accent)' }}>|</span>
                 </div>
 
-                {/* ── Right: stats stacked ── */}
-                <div style={{
-                    minWidth: 175,
+                {/* Subtitle */}
+                <p style={{
+                    fontFamily: 'var(--font-body)', fontSize: 'clamp(0.95rem, 2vw, 1.15rem)',
+                    color: 'var(--text-dim)', maxWidth: 520, lineHeight: 1.75,
                     opacity: visible ? 1 : 0,
-                    transition: 'opacity 0.8s ease 0.5s',
+                    transform: visible ? 'none' : 'translateY(16px)',
+                    transition: 'opacity 0.7s ease 0.4s, transform 0.7s ease 0.4s',
+                    marginBottom: '2.5rem',
+                }}>
+                    Computer Science student passionate about building innovative solutions
+                    with AI, web technologies, and creative problem-solving.
+                </p>
+
+                {/* CTAs */}
+                <div style={{
+                    display: 'flex', flexWrap: 'wrap', gap: '1rem',
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? 'none' : 'translateY(12px)',
+                    transition: 'opacity 0.7s ease 0.55s, transform 0.7s ease 0.55s',
+                    marginBottom: '4rem',
+                }}>
+                    <a href="#projects" className="btn-filled">View My Work →</a>
+                    <a href="#contact" className="btn-outlined">Get In Touch</a>
+                </div>
+
+                {/* Stats bar */}
+                <div style={{
+                    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: 16,
+                    maxWidth: 520,
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? 'none' : 'translateY(20px)',
+                    transition: 'opacity 0.8s ease 0.7s, transform 0.8s ease 0.7s',
                 }}>
                     {STATS.map((s, i) => (
-                        <StatItem key={s.label} stat={s} active={visible} delay={i * 350} />
+                        <StatItem key={s.label} stat={s} active={visible} delay={700 + i * 200} idx={i} />
                     ))}
+                </div>
+
+                {/* Scroll hint */}
+                <div style={{
+                    display: 'flex', alignItems: 'center', gap: '0.8rem',
+                    marginTop: '3rem',
+                    opacity: visible ? 1 : 0,
+                    transition: 'opacity 0.7s ease 1s',
+                }}>
+                    <span style={{
+                        fontFamily: 'var(--font-mono)', fontSize: '0.55rem',
+                        letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--muted)',
+                    }}>scroll to explore</span>
+                    <div style={{
+                        width: 40, height: 1,
+                        background: 'linear-gradient(90deg, rgba(255,255,255,0.15), transparent)',
+                    }} />
                 </div>
             </div>
 
-            {/* Radial glow */}
-            <div style={{
-                position: 'absolute', inset: 0, zIndex: -1, pointerEvents: 'none',
-                background: 'radial-gradient(ellipse 60% 50% at 30% 40%, rgba(79,142,247,0.06), transparent)',
-            }} />
-
             <style>{`
-        @media (max-width: 768px) {
-          #home > div > div {
-            grid-template-columns: 1fr !important;
-          }
-          #home > div > div > div:last-child {
-            display: none;
-          }
-        }
-      `}</style>
+                @keyframes gradient-shift {
+                    0% { background-position: 0% 50%; }
+                    100% { background-position: 100% 50%; }
+                }
+                @media (max-width: 768px) {
+                    #home > div { text-align: center; }
+                    #home .btn-filled, #home .btn-outlined { width: 100%; justify-content: center; }
+                }
+            `}</style>
         </section>
     );
 };

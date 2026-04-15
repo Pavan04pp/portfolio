@@ -15,6 +15,7 @@ const terminalLines = [
 const About: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
+  const [lineVis, setLineVis] = useState<boolean[]>(new Array(terminalLines.length).fill(false));
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.15 });
@@ -22,25 +23,39 @@ const About: React.FC = () => {
     return () => obs.disconnect();
   }, []);
 
+  // Stagger terminal lines one by one after section visible
+  useEffect(() => {
+    if (!vis) return;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    terminalLines.forEach((_, i) => {
+      timers.push(setTimeout(() => {
+        setLineVis(prev => { const n = [...prev]; n[i] = true; return n; });
+      }, 500 + i * 120));
+    });
+    return () => timers.forEach(clearTimeout);
+  }, [vis]);
+
   return (
     <section id="about" ref={sectionRef} style={{ padding: '6rem 1.5rem', position: 'relative', zIndex: 1 }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-        <span className="section-label">About Me</span>
+        <span className="section-label" style={{
+          opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(10px)',
+          transition: 'opacity 0.5s ease, transform 0.5s ease',
+        }}>About Me</span>
         <h2 style={{
           fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '3rem',
           opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(24px)',
-          transition: 'opacity 0.6s ease, transform 0.6s ease',
-        }}>Who I Am</h2>
+          transition: 'opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s',
+        }}>
+          Who I <span className="gradient-text">Am</span>
+        </h2>
 
         <div style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start',
         }} className="about-grid">
 
-          {/* Left: bio */}
-          <div style={{
-            opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(28px)',
-            transition: 'opacity 0.65s ease 0.1s, transform 0.65s ease 0.1s',
-          }}>
+          {/* Left: bio paragraphs – staggered */}
+          <div>
             {[
               "I'm Pavan Kumar K M, a passionate and driven Computer Science and Engineering student specializing in Artificial Intelligence and Machine Learning at NIE, Mysore (Batch: 2024–2028). My journey in tech is fueled by curiosity, problem-solving, and a desire to create real-world impact through innovative solutions.",
               "I'm proficient in Python, C++, and C#, with a strong focus on Data Structures and Algorithms (DSA). I also work with HTML, CSS, and JavaScript, and I'm exploring frameworks like Django and PyTorch while gaining hands-on experience in tools like NumPy and Pandas.",
@@ -50,27 +65,30 @@ const About: React.FC = () => {
                 fontFamily: 'var(--font-body)', color: 'var(--text-dim)',
                 lineHeight: 1.8, fontSize: '0.95rem',
                 marginBottom: i < 2 ? '1.25rem' : 0,
+                opacity: vis ? 1 : 0,
+                transform: vis ? 'none' : 'translateY(20px)',
+                transition: `opacity 0.6s ease ${0.2 + i * 0.15}s, transform 0.6s ease ${0.2 + i * 0.15}s`,
               }}>{para}</p>
             ))}
 
-            {/* Links */}
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '2rem' }}>
-              <a href="https://github.com/Pavan04pp" target="_blank" rel="noopener noreferrer" className="pill-btn">
-                ↗ GitHub
-              </a>
-              <a href="https://www.linkedin.com/in/pavankumarkm/" target="_blank" rel="noopener noreferrer" className="pill-btn">
-                ↗ LinkedIn
-              </a>
-              <a href="mailto:pavankumarkm@gmail.com" className="pill-btn">
-                ✉ Email
-              </a>
+            {/* Links — staggered from left */}
+            <div style={{
+              display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '2rem',
+              opacity: vis ? 1 : 0,
+              transform: vis ? 'none' : 'translateX(-20px)',
+              transition: 'opacity 0.6s ease 0.7s, transform 0.6s ease 0.7s',
+            }}>
+              <a href="https://github.com/Pavan04pp" target="_blank" rel="noopener noreferrer" className="pill-btn">↗ GitHub</a>
+              <a href="https://www.linkedin.com/in/pavankumarkm/" target="_blank" rel="noopener noreferrer" className="pill-btn">↗ LinkedIn</a>
+              <a href="mailto:pavankumarkm@gmail.com" className="pill-btn">✉ Email</a>
             </div>
           </div>
 
-          {/* Right: terminal JSON */}
+          {/* Right: terminal JSON — lines typed one-by-one */}
           <div style={{
-            opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(28px)',
-            transition: 'opacity 0.65s ease 0.25s, transform 0.65s ease 0.25s',
+            opacity: vis ? 1 : 0,
+            transform: vis ? 'none' : 'translateY(30px) scale(0.97)',
+            transition: 'opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s',
           }}>
             <div className="terminal">
               <div className="terminal-bar">
@@ -78,15 +96,23 @@ const About: React.FC = () => {
                 <div className="terminal-dot" style={{ background: '#febc2e' }} />
                 <div className="terminal-dot" style={{ background: '#28c840' }} />
                 <span style={{
-                  marginLeft: 8, fontFamily: 'var(--font-mono)', fontSize: '0.65rem',
+                  marginLeft: 12, fontFamily: 'var(--font-mono)', fontSize: '0.62rem',
                   color: 'var(--muted)', letterSpacing: '0.05em'
                 }}>pavan.json</span>
               </div>
               <div className="terminal-body">
                 {terminalLines.map((line, i) => (
-                  <div key={i} style={{ paddingLeft: line.indent * 16 }}>{line.content}</div>
+                  <div key={i} style={{
+                    paddingLeft: line.indent * 20,
+                    opacity: lineVis[i] ? 1 : 0,
+                    transform: lineVis[i] ? 'none' : 'translateX(-12px)',
+                    transition: 'opacity 0.3s ease, transform 0.3s ease',
+                  }}>{line.content}</div>
                 ))}
-                <div><span className="cursor-blink" /></div>
+                <div style={{
+                  opacity: lineVis[terminalLines.length - 1] ? 1 : 0,
+                  transition: 'opacity 0.3s ease 0.2s',
+                }}><span className="cursor-blink" /></div>
               </div>
             </div>
           </div>

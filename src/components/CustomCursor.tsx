@@ -20,8 +20,8 @@ const CustomCursor: React.FC = () => {
         const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
         const animate = () => {
-            ring.current.x = lerp(ring.current.x, mouse.current.x, 0.1);
-            ring.current.y = lerp(ring.current.y, mouse.current.y, 0.1);
+            ring.current.x = lerp(ring.current.x, mouse.current.x, 0.12);
+            ring.current.y = lerp(ring.current.y, mouse.current.y, 0.12);
             if (ringRef.current) {
                 ringRef.current.style.left = `${ring.current.x}px`;
                 ringRef.current.style.top = `${ring.current.y}px`;
@@ -51,35 +51,36 @@ const CustomCursor: React.FC = () => {
         };
     }, []);
 
-    const scale = hovered ? 1.8 : 1;
+    const scale = hovered ? 2.2 : 1;
 
     return (
         <>
-            {/* Dot — snaps to cursor instantly */}
+            {/* Dot */}
             <div
                 ref={dotRef}
                 style={{
                     position: 'fixed',
-                    width: 7, height: 7,
+                    width: 5, height: 5,
                     borderRadius: '50%',
-                    background: '#4f8ef7',
+                    background: '#e2b96f',
                     transform: `translate(-50%, -50%) scale(${scale})`,
                     transition: 'transform 0.2s ease',
                     pointerEvents: 'none',
                     zIndex: 99999,
                     top: 0, left: 0,
+                    mixBlendMode: 'difference',
                 }}
             />
-            {/* Ring — lags behind via lerp in animation loop */}
+            {/* Ring */}
             <div
                 ref={ringRef}
                 style={{
                     position: 'fixed',
                     width: 32, height: 32,
                     borderRadius: '50%',
-                    border: '1.5px solid rgba(79,142,247,0.6)',
+                    border: `1px solid rgba(226,185,111,${hovered ? 0.6 : 0.25})`,
                     transform: `translate(-50%, -50%) scale(${scale})`,
-                    transition: 'transform 0.25s ease, border-color 0.25s ease',
+                    transition: 'transform 0.3s ease, border-color 0.3s ease',
                     pointerEvents: 'none',
                     zIndex: 99998,
                     top: 0, left: 0,
