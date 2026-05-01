@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ─── Google Fonts are loaded via index.html ─────────────────────────────── */
 
 /* ─── Design Tokens — Luxury Warm Dark ───────────────────────────────────── */

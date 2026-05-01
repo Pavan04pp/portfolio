@@ -1,19 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useTheme } from '../context/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
 
-const BOT_NAME = "Pavan's Agent";
-const HF_MODEL = 'microsoft/DialoGPT-small';
+const BOT_NAME = "Pavan's AI Agent";
 
 const ChatBot: React.FC = () => {
   const { theme } = useTheme();
   const isLight = theme === 'light';
   const [messages, setMessages] = useState([
-    { sender: BOT_NAME, text: 'Hi! I am Pavan\'s Agent. Ask me anything about education or Pavan!' }
+    { sender: BOT_NAME, text: "Hi there! I'm Pavan's AI Agent. I can answer any questions about his skills, education, and portfolio. What would you like to know?" }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [learnedFacts, setLearnedFacts] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,21 +32,58 @@ const ChatBot: React.FC = () => {
     setInput('');
     setLoading(true);
     try {
-      const apiKey = import.meta.env.VITE_HF_API_KEY;
+      if (input.startsWith('?/')) {
+        const fact = input.slice(2).trim();
+        if (fact) {
+          setLearnedFacts(prev => [...prev, fact]);
+          setMessages(msgs => [...msgs, { sender: BOT_NAME, text: `Got it! I have memorized: "${fact}"` }]);
+        }
+        setLoading(false);
+        return;
+      }
+
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      if (!apiKey) {
+        throw new Error("OpenAI API key is missing. Please add VITE_OPENAI_API_KEY to your .env file.");
+      }
+
+      const systemPrompt = `You are an exclusive, highly professional AI assistant for Pavan's portfolio website. 
+Your ONLY purpose is to answer questions about Pavan, his skills, education, experience, and projects.
+CRITICAL RULES:
+1. NEVER answer general knowledge, coding help, math, or unrelated questions. 
+2. If asked something unrelated, politely decline and steer the conversation back to Pavan. 
+3. Keep responses concise, impressive, and friendly. 
+4. If asked who created you, say you were integrated to showcase Pavan's tech stack capabilities.
+${learnedFacts.length > 0 ? `\nIMPORTANT MEMORIZED FACTS (Use these to answer questions if relevant):\n` + learnedFacts.map(f => `- ${f}`).join('\n') : ''}`;
+
+      const openAiMessages = [
+        { role: 'system', content: systemPrompt },
+        ...messages.map(m => ({
+          role: m.sender === 'You' ? 'user' : 'assistant',
+          content: m.text
+        })),
+        { role: 'user', content: input }
+      ];
+
       const response = await axios.post(
-        `https://api-inference.huggingface.co/models/${HF_MODEL}`,
-        { inputs: input },
+        'https://api.openai.com/v1/chat/completions',
+        { 
+          model: 'gpt-3.5-turbo',
+          messages: openAiMessages,
+          max_tokens: 200,
+          temperature: 0.5
+        },
         { headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' } }
       );
-      let botReply = '';
-      if (response.data && response.data.error) botReply = `Error: ${response.data.error}`;
-      else if (response.data && response.data.generated_text) botReply = response.data.generated_text.trim();
-      else if (Array.isArray(response.data) && response.data[0]?.generated_text) botReply = response.data[0].generated_text.trim();
-      else botReply = 'Sorry, I could not get a response. Please try again later.';
+      
+      let botReply = 'Sorry, I am currently experiencing issues connecting to my brain.';
+      if (response.data && response.data.choices && response.data.choices.length > 0) {
+        botReply = response.data.choices[0].message.content.trim();
+      }
       setMessages((msgs) => [...msgs, { sender: BOT_NAME, text: botReply }]);
     } catch (err: any) {
-      let errorMsg = 'Sorry, I could not get a response. Please try again later.';
-      if (err.response?.data?.error) errorMsg = `Error: ${err.response.data.error}`;
+      let errorMsg = 'Oops! Connection failed. Please try again later.';
+      if (err.response?.data?.error?.message) errorMsg = `Error: ${err.response.data.error.message}`;
       else if (err.message) errorMsg = `Error: ${err.message}`;
       setMessages((msgs) => [...msgs, { sender: BOT_NAME, text: errorMsg }]);
     } finally {
@@ -53,57 +92,138 @@ const ChatBot: React.FC = () => {
   };
 
   return (
-    <div>
-      <button
-        className={`fixed bottom-6 right-6 z-50 rounded-full p-4 shadow-lg focus:outline-none transition-all ${isLight
-          ? 'bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] hover:shadow-[0_8px_25px_rgba(79,70,229,0.35)]'
-          : 'bg-gradient-to-r from-cyan-500 to-violet-600 hover:shadow-cyan-500/40'}`}
-        onClick={() => setOpen((o) => !o)}
-        aria-label="Open chat bot"
-        style={{ color: '#FFFFFF' }}
-      >💬</button>
+    <>
+      {/* Floating Action Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setOpen(!open)}
+        className={`fixed bottom-6 right-6 z-[100] flex h-14 w-14 items-center justify-center rounded-full shadow-2xl transition-all ${
+          isLight 
+            ? 'bg-gradient-to-tr from-indigo-500 to-cyan-400 shadow-indigo-500/40 hover:shadow-indigo-500/60' 
+            : 'bg-gradient-to-tr from-cyan-500 to-violet-600 shadow-cyan-500/40 hover:shadow-cyan-500/60'
+        }`}
+      >
+        {open ? <X color="white" size={24} /> : <img src="/robot-avatar.png" alt="ChatBot" className="w-full h-full rounded-full object-cover shadow-inner" />}
+        {/* Pulse Effect */}
+        {!open && (
+          <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-cyan-400 opacity-40"></span>
+        )}
+      </motion.button>
 
-      {open && (
-        <div className={`fixed bottom-20 right-6 z-50 w-80 max-w-full rounded-2xl shadow-2xl flex flex-col ${isLight
-          ? 'bg-white border border-[#CBD5E1]'
-          : 'bg-gray-900 border border-gray-700'}`}>
-          <div className={`p-3 border-b rounded-t-2xl font-bold flex items-center justify-between ${isLight
-            ? 'border-[#CBD5E1] bg-gradient-to-r from-[#4F46E5] to-[#06B6D4]'
-            : 'border-gray-700 bg-gradient-to-r from-cyan-500 to-violet-600'}`}
-            style={{ color: '#FFFFFF' }}>
-            {BOT_NAME}
-            <button onClick={() => setOpen(false)} className="hover:opacity-80 text-lg font-bold" style={{ color: '#FFFFFF' }}>×</button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-2" style={{ maxHeight: 350 }}>
-            {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.sender === 'You' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`px-3 py-2 rounded-xl text-sm ${msg.sender === 'You'
-                  ? (isLight ? 'bg-[#E8EEFF] text-[#0D1B3E]' : 'bg-cyan-900/30 text-white')
-                  : (isLight ? 'bg-[#F0F4FF] text-[#0D1B3E]' : 'bg-gray-800 text-white')}`}>
-                  <b>{msg.sender}:</b> {msg.text}
+      {/* Chat Window */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            drag
+            dragConstraints={{ top: -500, left: -500, right: 20, bottom: 20 }}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 250, damping: 25 }}
+            className={`fixed bottom-24 right-6 z-[100] flex w-[340px] flex-col overflow-hidden rounded-2xl border shadow-[0_20px_50px_rgba(0,0,0,0.3)] backdrop-blur-xl ${
+              isLight 
+                ? 'border-white/40 bg-white/80' 
+                : 'border-white/10 bg-gray-900/80'
+            }`}
+          >
+            {/* Header (Drag Handle) */}
+            <div className={`flex cursor-grab items-center justify-between border-b p-4 active:cursor-grabbing ${
+              isLight ? 'border-gray-200 bg-white/50' : 'border-gray-700 bg-black/40'
+            }`}>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden shadow-sm border border-white/10">
+                  <img src="/robot-avatar.png" alt="Bot" className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h3 className={`text-sm font-bold ${isLight ? 'text-gray-800' : 'text-white'}`}>{BOT_NAME}</h3>
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                    <span className="text-xs text-gray-400">Online</span>
+                  </div>
                 </div>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-          <form onSubmit={sendMessage} className={`flex border-t ${isLight ? 'border-[#CBD5E1]' : 'border-gray-700'}`}>
-            <input type="text"
-              className={`flex-1 px-3 py-2 rounded-bl-2xl focus:outline-none ${isLight
-                ? 'bg-[#F0F4FF] text-[#0D1B3E] placeholder:text-[#94A3B8]'
-                : 'bg-gray-800 text-white placeholder:text-gray-500'}`}
-              placeholder="Type your question..." value={input} onChange={e => setInput(e.target.value)}
-              disabled={loading} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) sendMessage(e as any); }} />
-            <button type="submit"
-              className={`px-4 py-2 rounded-br-2xl disabled:opacity-50 transition-all ${isLight
-                ? 'bg-gradient-to-r from-[#4F46E5] to-[#06B6D4]'
-                : 'bg-gradient-to-r from-cyan-500 to-violet-600'}`}
-              disabled={loading} style={{ color: '#FFFFFF' }}>
-              {loading ? '...' : 'Send'}
-            </button>
-          </form>
-        </div>
-      )}
-    </div>
+              <button onClick={() => setOpen(false)} className={`rounded-full p-1 transition-colors ${isLight ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-gray-800 text-gray-400'}`}>
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Messages Area */}
+            <div className="flex h-[380px] flex-col gap-4 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
+              {messages.map((msg, i) => {
+                const isUser = msg.sender === 'You';
+                return (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    key={i} 
+                    className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className={`flex max-w-[85%] items-end gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                      <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full overflow-hidden ${
+                        isUser 
+                          ? (isLight ? 'bg-indigo-500 text-white' : 'bg-violet-600 text-white') 
+                          : 'bg-transparent'
+                      }`}>
+                        {isUser ? <User size={14} /> : <img src="/robot-avatar.png" alt="Bot" className="w-full h-full object-cover" />}
+                      </div>
+                      <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ${
+                        isUser 
+                          ? (isLight ? 'bg-indigo-500 text-white rounded-br-sm' : 'bg-violet-600 text-white rounded-br-sm')
+                          : (isLight ? 'bg-white text-gray-800 rounded-bl-sm border border-gray-100' : 'bg-gray-800 text-gray-200 rounded-bl-sm border border-gray-700')
+                      }`}>
+                        {msg.text}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+              {loading && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                  <div className={`flex items-center gap-2 rounded-2xl px-4 py-3 ${isLight ? 'bg-white border border-gray-100' : 'bg-gray-800 border border-gray-700'} rounded-bl-sm`}>
+                    <span className="flex gap-1">
+                      <motion.span animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity }} className={`h-1.5 w-1.5 rounded-full ${isLight ? 'bg-indigo-400' : 'bg-cyan-400'}`} />
+                      <motion.span animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }} className={`h-1.5 w-1.5 rounded-full ${isLight ? 'bg-indigo-400' : 'bg-cyan-400'}`} />
+                      <motion.span animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }} className={`h-1.5 w-1.5 rounded-full ${isLight ? 'bg-indigo-400' : 'bg-cyan-400'}`} />
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Area */}
+            <form onSubmit={sendMessage} className={`border-t p-3 ${isLight ? 'border-gray-200 bg-white/50' : 'border-gray-700 bg-black/40'}`}>
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  disabled={loading}
+                  placeholder="Ask about Pavan..."
+                  className={`w-full rounded-full py-2.5 pl-4 pr-12 text-sm focus:outline-none focus:ring-2 ${
+                    isLight 
+                      ? 'bg-white text-gray-800 focus:ring-indigo-500/50 placeholder:text-gray-400 border border-gray-200' 
+                      : 'bg-gray-800 text-white focus:ring-cyan-500/50 placeholder:text-gray-500 border border-gray-700'
+                  }`}
+                />
+                <button
+                  type="submit"
+                  disabled={loading || !input.trim()}
+                  className={`absolute right-1.5 flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+                    input.trim() 
+                      ? (isLight ? 'bg-indigo-500 text-white hover:bg-indigo-600' : 'bg-cyan-500 text-white hover:bg-cyan-600') 
+                      : 'bg-gray-300 text-gray-500 dark:bg-gray-700 dark:text-gray-500'
+                  }`}
+                >
+                  <Send size={14} className={input.trim() ? 'ml-0.5' : ''} />
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
