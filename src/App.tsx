@@ -7,6 +7,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import ChatBot from './components/ChatBot';
+import Certifications from './components/Certifications';
 
 import AnimatedBackground from './components/AnimatedBackground';
 import LeetCodeStats from './components/LeetCodeStats';
@@ -162,6 +163,8 @@ const App: React.FC = () => (
       <Experience />
       <div className="section-divider" />
       <Education />
+      <div className="section-divider" />
+      <Certifications />
       <div className="section-divider" />
       <LeetCodeSection />
 
