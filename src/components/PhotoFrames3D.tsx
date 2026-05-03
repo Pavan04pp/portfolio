@@ -192,7 +192,7 @@ const PhotoFrames3D: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-8 justify-center items-center w-full max-w-2xl mx-auto">
             <div className="w-64">
                 <Photo3DFrame
-                    imageSrc="/portfolio/profile.jpg"
+                    imageSrc={`${import.meta.env.BASE_URL}profile.jpg`}
                     title="Pavan Kumar K M"
                     subtitle="Developer & Creator"
                     delay={0}
@@ -200,7 +200,7 @@ const PhotoFrames3D: React.FC = () => {
             </div>
             <div className="w-64">
                 <Photo3DFrame
-                    imageSrc="/portfolio/profile-placeholder.png"
+                    imageSrc={`${import.meta.env.BASE_URL}profile-placeholder.png`}
                     title="Pavan Kumar K M"
                     subtitle="AI & ML Enthusiast"
                     delay={0.2}

@@ -8,8 +8,7 @@ type Work = {
   image?: string | null;
 };
 
-// We'll compute the correct API path at runtime because the site may be served
-// under a base path like /portfolio/ (see vite.config.ts base).
+// We'll compute the correct API path at runtime; assets use import.meta.env.BASE_URL when needed.
 
 const WorksCarousel: React.FC = () => {
   const [works, setWorks] = useState<Work[]>([]);
@@ -20,8 +19,7 @@ const WorksCarousel: React.FC = () => {
     const fetchWorks = async () => {
       try {
         // choose API URL depending on whether the current page path includes the base
-        const hasPortfolioBase = typeof window !== 'undefined' && window.location.pathname.includes('/portfolio');
-        const apiUrl = hasPortfolioBase ? '/portfolio/api/works' : '/api/works';
+  const apiUrl = '/api/works';
         // try the computed apiUrl first, fall back to localhost backend if necessary
         let res;
         try {
@@ -32,12 +30,12 @@ const WorksCarousel: React.FC = () => {
         }
         // show newest first (treat id as timestamp)
         const sorted = res.data.sort((a: Work, b: Work) => Number(b.id) - Number(a.id));
-        // normalize image URLs so they load correctly when the app is served under /portfolio/
-        // In dev, Vite serves the frontend on a different origin (5173) and the backend
-        // serves images on :3000; therefore use absolute backend origin when running dev.
+  // normalize image URLs so they load correctly when the app is served from a different origin
+  // In dev, Vite serves the frontend on a different origin (5173) and the backend
+  // serves images on :3000; therefore use absolute backend origin when running dev.
         const isDevFrontend = typeof window !== 'undefined' && window.location.hostname === 'localhost' && (window.location.port === '5173' || window.location.port === '3000' || window.location.port === '5174');
         const backendOrigin = 'http://localhost:3000';
-        const prefix = hasPortfolioBase ? '/portfolio' : '';
+  const prefix = import.meta.env.BASE_URL || '';
         const normalized = sorted.map((w: Work) => {
           let img = w.image;
           if (img && !img.startsWith('http')) {

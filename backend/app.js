@@ -20,8 +20,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/works', worksRouter);
-// Also mount the works router under the /portfolio prefix so requests to
-// /portfolio/api/works are handled when the app is served from a base path.
-app.use('/portfolio/api/works', worksRouter);
 
 module.exports = app;

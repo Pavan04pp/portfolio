@@ -12,14 +12,14 @@
     </style>
   </head>
   <body>
-  <form id="uploadForm" method="post" enctype="multipart/form-data" action="/portfolio/api/works">
+  <form id="uploadForm" method="post" enctype="multipart/form-data" action="/api/works">
       <h2 style="margin-top:0;margin-bottom:12px">Upload Work</h2>
       <input type="text" name="title" placeholder="Title" required />
       <textarea name="description" placeholder="Description" rows="4" required></textarea>
       <input type="file" name="image" accept="image/*" />
       <button type="submit">Upload</button>
       <div id="result" style="margin-top:10px;font-size:14px;min-height:20px"></div>
-      <p style="font-size:12px;opacity:0.8;margin-top:8px">Tip: The form will try the current action, then <code>/portfolio/api/works</code>, then <code>http://localhost:3000/api/works</code>. If your backend is hosted elsewhere, change the form action or the script below to point to your deployed API URL.</p>
+  <p style="font-size:12px;opacity:0.8;margin-top:8px">Tip: The form will try the current action, then <code>/api/works</code>, then <code>http://localhost:3000/api/works</code>. If your backend is hosted elsewhere, change the form action or the script below to point to your deployed API URL.</p>
     </form>
 
     <script>
@@ -30,7 +30,6 @@
         // endpoints to try when resolving the API base
         const endpointsToTry = [
           form.action,
-          '/portfolio/api/works',
           '/api/works',
           'http://localhost:3000/api/works'
         ];
@@ -93,11 +92,10 @@
           if (!imgPath) return null;
           try {
             if (imgPath.startsWith('http')) return imgPath;
-            // if frontend served under /portfolio, use backend origin in dev
+            // if frontend served locally in dev, point to local backend
             const isDevFrontend = window.location.hostname === 'localhost' && (window.location.port === '5173' || window.location.port === '3000');
             if (isDevFrontend) return 'http://localhost:3000' + imgPath;
-            // otherwise assume same origin/prefix (host serves /portfolio)
-            if (window.location.pathname.includes('/portfolio')) return '/portfolio' + imgPath;
+            // otherwise assume same origin for image paths
             return imgPath;
           } catch (e) { return imgPath; }
         }

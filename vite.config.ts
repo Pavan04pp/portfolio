@@ -12,11 +12,11 @@ export default defineConfig({
     port: 5173,
     open: true,
     proxy: {
-      // Proxy requests from /portfolio/api/* to the backend at http://localhost:3000/api/*
-      '/portfolio/api': {
+      // Proxy requests from /api/* to the backend at http://localhost:3000 during dev
+      '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/portfolio\/api/, '/api')
+        rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
   },
