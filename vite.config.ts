@@ -3,10 +3,8 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Serve assets at the site root. When you publish this repository to a
-  // custom domain (for example pavancodes.me) the app should reference
-  // assets from `/assets/...` so set base to '/'.
-  base: '/',
+  // Serve assets under /portfolio/ so the site works at pavancodes.me/portfolio/.
+  base: '/portfolio/',
   plugins: [react()],
   server: {
     port: 5173,
