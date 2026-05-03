@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Upload Work</title>
+    <style>
+      body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;background:#0b1020;color:#e6eef8;display:flex;align-items:center;justify-content:center;height:100vh}
+      form{background:#0f1724;padding:20px;border-radius:8px;width:360px}
+      input,textarea{width:100%;margin-bottom:10px;padding:8px;border-radius:6px;border:1px solid #1f2937;background:#0b1220;color:#e6eef8}
+      button{width:100%;padding:10px;border-radius:6px;background:#ef4444;border:none;color:white;font-weight:600}
+    </style>
+  </head>
+  <body>
+  <form id="uploadForm" method="post" enctype="multipart/form-data" action="/api/works">
+      <h2 style="margin-top:0;margin-bottom:12px">Upload Work</h2>
+      <input type="text" name="title" placeholder="Title" required />
+      <textarea name="description" placeholder="Description" rows="4" required></textarea>
+      <input type="file" name="image" accept="image/*" />
+      <button type="submit">Upload</button>
+      <div id="result" style="margin-top:10px;font-size:14px;min-height:20px"></div>
+  <p style="font-size:12px;opacity:0.8;margin-top:8px">Tip: The form will try the current action, then <code>/api/works</code>, then <code>http://localhost:3000/api/works</code>. If your backend is hosted elsewhere, change the form action or the script below to point to your deployed API URL.</p>
+    </form>
+
+    <script>
+      (function(){
+        const form = document.getElementById('uploadForm');
+        const result = document.getElementById('result');
+
+        // endpoints to try when resolving the API base
+        const endpointsToTry = [
+          form.action,
+          '/api/works',
+          'http://localhost:3000/api/works'
+        ];
+
+        // attempt to find a working API endpoint by trying GET
+        async function resolveApi() {
+          for (const ep of endpointsToTry) {
+            if (!ep) continue;
+            try {
+              const res = await fetch(ep, { method: 'GET' });
+              if (res.ok) return ep.replace(/\/+$/, '');
+            } catch (e) {
+              // ignore and try next
+            }
+          }
+          return null;
+        }
+
+        async function postTo(url, fd){
+          try{
+            const res = await fetch(url, { method: 'POST', body: fd });
+            const text = await res.text();
+            return { ok: res.ok, status: res.status, body: text };
+          }catch(e){
+            return { ok: false, status: 0, body: e.message };
+          }
+        }
+
+        form.addEventListener('submit', async function(e){
+          e.preventDefault();
+          result.textContent = 'Uploading...';
+          const fd = new FormData(form);
+
+          const api = await resolveApi();
+          if (!api) {
+            result.innerHTML = '<span style="color:#fecaca">No reachable API endpoint found.</span>';
+            return;
+          }
+
+          const res = await postTo(api, fd);
+          if (res.ok) {
+            result.innerHTML = '<span style="color:#9ae6b4">Upload successful.</span>';
+            // refresh list
+            loadExisting();
+            form.reset();
+          } else {
+            result.innerHTML = '<span style="color:#fecaca">Upload failed.</span>';
+            console.error('Upload failed', res);
+          }
+        });
+
+        // --- existing uploads list and delete support ---
+        const listRoot = document.createElement('div');
+        listRoot.id = 'existingWorks';
+        listRoot.style.maxWidth = '800px';
+        listRoot.style.margin = '20px auto';
+        document.body.appendChild(listRoot);
+
+        function makeImageUrl(imgPath) {
+          if (!imgPath) return null;
+          try {
+            if (imgPath.startsWith('http')) return imgPath;
+            // if frontend served locally in dev, point to local backend
+            const isDevFrontend = window.location.hostname === 'localhost' && (window.location.port === '5173' || window.location.port === '3000');
+            if (isDevFrontend) return 'http://localhost:3000' + imgPath;
+            // otherwise assume same origin for image paths
+            return imgPath;
+          } catch (e) { return imgPath; }
+        }
+
+        async function loadExisting() {
+          listRoot.innerHTML = '<h3 style="color:#e6eef8">Existing uploads</h3><p style="color:#9ca3af">Loading...</p>';
+          const api = await resolveApi();
+          if (!api) { listRoot.innerHTML = '<p style="color:#fecaca">No API available to list uploads.</p>'; return; }
+          try {
+            const res = await fetch(api);
+            if (!res.ok) throw new Error('Failed to fetch');
+            const data = await res.json();
+            if (!data.length) { listRoot.innerHTML = '<p style="color:#9ca3af">No uploads yet.</p>'; return; }
+            // render list
+            listRoot.innerHTML = '';
+            data.sort((a,b) => Number(b.id)-Number(a.id));
+            data.forEach(item => {
+              const row = document.createElement('div');
+              row.style.display = 'flex';
+              row.style.gap = '12px';
+              row.style.alignItems = 'center';
+              row.style.background = '#0f1724';
+              row.style.padding = '10px';
+              row.style.borderRadius = '8px';
+              row.style.marginBottom = '10px';
+
+              const img = document.createElement('img');
+              img.style.width = '120px';
+              img.style.height = '80px';
+              img.style.objectFit = 'cover';
+              img.style.borderRadius = '6px';
+              const imgUrl = makeImageUrl(item.image);
+              img.src = imgUrl || '';
+              img.onerror = () => { img.src = ''; img.style.background = '#111827'; img.style.display = 'flex'; };
+
+              const meta = document.createElement('div');
+              meta.style.flex = '1';
+              const title = document.createElement('div');
+              title.textContent = item.title || '(no title)';
+              title.style.color = '#fff';
+              title.style.fontWeight = '700';
+              const desc = document.createElement('div');
+              desc.textContent = item.description || ''; desc.style.color = '#cbd5e1';
+
+              const del = document.createElement('button');
+              del.textContent = 'Delete';
+              del.style.background = '#ef4444';
+              del.style.color = 'white';
+              del.style.border = 'none';
+              del.style.padding = '8px 10px';
+              del.style.borderRadius = '6px';
+              del.onclick = async () => {
+                if (!confirm('Delete this upload?')) return;
+                try {
+                  const delRes = await fetch(api + '/' + encodeURIComponent(item.id), { method: 'DELETE' });
+                  if (!delRes.ok) throw new Error('Delete failed');
+                  await loadExisting();
+                } catch (e) {
+                  alert('Failed to delete item');
+                }
+              };
+
+              meta.appendChild(title);
+              meta.appendChild(desc);
+              row.appendChild(img);
+              row.appendChild(meta);
+              row.appendChild(del);
+              listRoot.appendChild(row);
+            });
+          } catch (e) {
+            listRoot.innerHTML = '<p style="color:#fecaca">Failed to load uploads.</p>';
+          }
+        }
+
+        // initial load
+        loadExisting();
+      })();
+    </script>
+  </body>
+</html>
