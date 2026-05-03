@@ -42,9 +42,16 @@ const ChatBot: React.FC = () => {
         return;
       }
 
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      // Do NOT use import.meta.env here because Vite inlines env values at build time
+      // which can leak secrets into compiled assets. Instead, read a runtime key that
+      // the host can inject into the page (e.g. window.__OPENAI_KEY). If no key is
+      // available, respond with a helpful message rather than throwing (so builds
+      // remain safe).
+      const apiKey = (typeof window !== 'undefined' && (window as any).__OPENAI_KEY) || '';
       if (!apiKey) {
-        throw new Error("OpenAI API key is missing. Please add VITE_OPENAI_API_KEY to your .env file.");
+        setMessages((msgs) => [...msgs, { sender: BOT_NAME, text: "The chat feature is currently disabled (no OpenAI API key provided)." }]);
+        setLoading(false);
+        return;
       }
 
       const systemPrompt = `You are an exclusive, highly professional AI assistant for Pavan's portfolio website. 
@@ -104,7 +111,7 @@ ${learnedFacts.length > 0 ? `\nIMPORTANT MEMORIZED FACTS (Use these to answer qu
             : 'bg-gradient-to-tr from-cyan-500 to-violet-600 shadow-cyan-500/40 hover:shadow-cyan-500/60'
         }`}
       >
-        {open ? <X color="white" size={24} /> : <img src="/robot-avatar.png" alt="ChatBot" className="w-full h-full rounded-full object-cover shadow-inner" />}
+  {open ? <X color="white" size={24} /> : <img src={`${import.meta.env.BASE_URL}robot-avatar.png`} alt="ChatBot" className="w-full h-full rounded-full object-cover shadow-inner" onError={(e) => { (e.currentTarget as HTMLImageElement).src = `${import.meta.env.BASE_URL}profile-placeholder.png`; }} />}
         {/* Pulse Effect */}
         {!open && (
           <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-cyan-400 opacity-40"></span>
@@ -133,7 +140,7 @@ ${learnedFacts.length > 0 ? `\nIMPORTANT MEMORIZED FACTS (Use these to answer qu
             }`}>
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden shadow-sm border border-white/10">
-                  <img src="/robot-avatar.png" alt="Bot" className="w-full h-full object-cover" />
+                  <img src={`${import.meta.env.BASE_URL}robot-avatar.png`} alt="Bot" className="w-full h-full object-cover" onError={(e) => { (e.currentTarget as HTMLImageElement).src = `${import.meta.env.BASE_URL}profile-placeholder.png`; }} />
                 </div>
                 <div>
                   <h3 className={`text-sm font-bold ${isLight ? 'text-gray-800' : 'text-white'}`}>{BOT_NAME}</h3>
@@ -165,7 +172,7 @@ ${learnedFacts.length > 0 ? `\nIMPORTANT MEMORIZED FACTS (Use these to answer qu
                           ? (isLight ? 'bg-indigo-500 text-white' : 'bg-violet-600 text-white') 
                           : 'bg-transparent'
                       }`}>
-                        {isUser ? <User size={14} /> : <img src="/robot-avatar.png" alt="Bot" className="w-full h-full object-cover" />}
+                        {isUser ? <User size={14} /> : <img src={`${import.meta.env.BASE_URL}robot-avatar.png`} alt="Bot" className="w-full h-full object-cover" onError={(e) => { (e.currentTarget as HTMLImageElement).src = `${import.meta.env.BASE_URL}profile-placeholder.png`; }} />}
                       </div>
                       <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ${
                         isUser 
