@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, User, Trash2, Bot, Sparkles, Terminal } from 'lucide-react';
+import { X, Send, User, Trash2, Sparkles } from 'lucide-react';
 
 const BOT_NAME = "Pavan's AI Core";
 
@@ -20,9 +19,6 @@ const CyberAvatar: React.FC<{ pulsing?: boolean }> = ({ pulsing = false }) => (
 );
 
 const ChatBot: React.FC = () => {
-  const { theme } = useTheme();
-  const isLight = theme === 'light';
-  
   const [messages, setMessages] = useState([
     { sender: BOT_NAME, text: "Interface initialized. I am Pavan's AI Agent. Ask me about his projects, skills, education, or experience." }
   ]);
