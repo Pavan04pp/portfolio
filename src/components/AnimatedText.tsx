@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Text3D, Center, useMatcapTexture } from '@react-three/drei';
+import { Text3D, Center } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 
 interface AnimatedTextProps {

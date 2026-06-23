@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
+import { X, Send, User } from 'lucide-react';
 
 const BOT_NAME = "Pavan's AI Agent";
 
@@ -47,7 +47,7 @@ const ChatBot: React.FC = () => {
       // the host can inject into the page (e.g. window.__OPENAI_KEY). If no key is
       // available, respond with a helpful message rather than throwing (so builds
       // remain safe).
-      const apiKey = (typeof window !== 'undefined' && (window as any).__OPENAI_KEY) || '';
+      const apiKey = (typeof window !== 'undefined' && (window as unknown as { __OPENAI_KEY?: string }).__OPENAI_KEY) || '';
       if (!apiKey) {
         setMessages((msgs) => [...msgs, { sender: BOT_NAME, text: "The chat feature is currently disabled (no OpenAI API key provided)." }]);
         setLoading(false);
@@ -88,10 +88,13 @@ ${learnedFacts.length > 0 ? `\nIMPORTANT MEMORIZED FACTS (Use these to answer qu
         botReply = response.data.choices[0].message.content.trim();
       }
       setMessages((msgs) => [...msgs, { sender: BOT_NAME, text: botReply }]);
-    } catch (err: any) {
+    } catch (err) {
       let errorMsg = 'Oops! Connection failed. Please try again later.';
-      if (err.response?.data?.error?.message) errorMsg = `Error: ${err.response.data.error.message}`;
-      else if (err.message) errorMsg = `Error: ${err.message}`;
+      if (axios.isAxiosError(err) && err.response?.data?.error?.message) {
+        errorMsg = `Error: ${err.response.data.error.message}`;
+      } else if (err instanceof Error) {
+        errorMsg = `Error: ${err.message}`;
+      }
       setMessages((msgs) => [...msgs, { sender: BOT_NAME, text: errorMsg }]);
     } finally {
       setLoading(false);

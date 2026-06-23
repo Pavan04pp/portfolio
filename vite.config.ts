@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Serve assets under /portfolio/ so the site works at pavancodes.me/portfolio/.
-  base: '/portfolio/',
+  // Use root base path on Vercel, and /portfolio/ for GitHub Pages
+  base: process.env.VERCEL ? '/' : '/portfolio/',
   plugins: [react()],
   server: {
     port: 5173,

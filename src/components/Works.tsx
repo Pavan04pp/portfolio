@@ -3,8 +3,15 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:3000/api/works'; // Change port if needed
 
+interface WorkItem {
+  id: string;
+  title: string;
+  description: string;
+  image?: string;
+}
+
 const Works: React.FC = () => {
-  const [works, setWorks] = useState<any[]>([]);
+  const [works, setWorks] = useState<WorkItem[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState<File | null>(null);

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Theme = 'dark' | 'light';
@@ -25,7 +26,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         // Always enforce dark theme
         try {
             localStorage.setItem('portfolio-theme', 'dark');
-        } catch {}
+        } catch (e) {
+            console.warn('LocalStorage not available:', e);
+        }
 
         // Remove any light-theme class and add dark classes used by the stylesheet
         document.documentElement.classList.remove('theme-light');

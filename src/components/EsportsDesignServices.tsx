@@ -58,7 +58,7 @@ const EsportsDesignServices: React.FC = () => {
         >
           <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2"><FaPaintBrush className="text-red-500" /> Digital Design Packs</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {designServices.map((service, idx) => (
+            {designServices.map((service) => (
               <motion.div
                 key={service.name}
                 className="bg-gray-900 rounded-xl shadow-lg p-6 flex flex-col items-center text-center hover:shadow-2xl transition-shadow duration-300"
@@ -91,7 +91,7 @@ const EsportsDesignServices: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {esportsPacks.map((pack, idx) => (
+                {esportsPacks.map((pack) => (
                   <tr key={pack.name} className="border-t border-gray-800 hover:bg-gray-800 transition-colors">
                     <td className="py-3 px-4 font-bold text-white whitespace-nowrap">{pack.name}</td>
                     <td className="py-3 px-4 text-gray-300">{pack.features}</td>
@@ -113,7 +113,7 @@ const EsportsDesignServices: React.FC = () => {
         >
           <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2"><FaPlus className="text-green-400" /> Add-ons</h3>
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {addons.map((addon, idx) => (
+            {addons.map((addon) => (
               <li key={addon} className="bg-gray-900 rounded-xl shadow p-4 text-white flex items-center gap-2">
                 <FaPlus className="text-green-400" /> {addon}
               </li>
