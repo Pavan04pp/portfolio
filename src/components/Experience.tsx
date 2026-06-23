@@ -86,7 +86,7 @@ const Experience: React.FC = () => {
               marginBottom: i < items.length - 1 ? '2.5rem' : 0,
               position: 'relative',
             }}>
-              {/* Timeline dot — scale pop */}
+              {/* Timeline dot — scale pop with glow */}
               <div style={{
                 position: 'absolute', left: '-2rem',
                 top: '0.5rem',
@@ -94,18 +94,24 @@ const Experience: React.FC = () => {
                 borderRadius: '50%',
                 background: 'var(--bg)',
                 border: `2px solid ${item.badgeColor}`,
+                boxShadow: dotVis[i] ? `0 0 14px ${item.badgeColor}` : 'none',
                 zIndex: 1,
                 transform: dotVis[i] ? 'scale(1)' : 'scale(0)',
-                transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease',
               }} />
 
-              {/* Card — slide in from left */}
+              {/* Card — slide in from left (Frosted Cyber Glass) */}
               <div className="glass" style={{
                 padding: '2rem',
                 marginLeft: '0.5rem',
                 opacity: cardVis[i] ? 1 : 0,
                 transform: cardVis[i] ? 'none' : 'translateX(-30px)',
                 transition: 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                background: 'rgba(17, 17, 19, 0.55)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.5)',
               }}>
                 <span style={{
                   fontFamily: 'var(--font-mono)', fontSize: '0.6rem',

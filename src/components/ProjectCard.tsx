@@ -62,26 +62,26 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           transformStyle: 'preserve-3d',
         }}
         whileHover={{ scale: 1.03, y: -6 }}
-        className="relative w-full max-w-sm bg-gradient-to-br from-gray-900/90 to-black/90 rounded-xl p-6 shadow-2xl backdrop-blur-sm border border-gray-800/50 hover:ring-1 hover:ring-red-600/40 hover:shadow-[0_12px_40px_rgba(220,38,38,0.12)] transition-all duration-300"
+        className="relative w-full max-w-sm bg-zinc-950/65 backdrop-blur-md rounded-xl p-6 shadow-2xl border border-white/5 hover:border-[#e2b96f]/40 hover:shadow-[0_20px_50px_rgba(226,185,111,0.06),0_0_30px_rgba(192,132,252,0.04)] transition-all duration-300"
       >
       <div className="relative h-48 mb-4 rounded-lg overflow-hidden group">
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
-        <div className="absolute inset-0 bg-gradient-to-r from-red-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#e2b96f]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
       <h3 className="text-xl font-bold mb-2 premium-text">{title}</h3>
-      <p className="text-gray-300 mb-4">{description}</p>
+      <p className="text-zinc-400 text-sm mb-4 leading-relaxed">{description}</p>
 
       <div className="flex flex-wrap gap-2 mb-4">
         {technologies.map((tech, index) => (
           <span
             key={index}
-            className="px-3 py-1 bg-red-900/20 text-red-300 rounded-full text-sm border border-red-900/30 hover:bg-red-900/30 transition-colors duration-300"
+            className="px-3 py-1 bg-[#e2b96f]/5 text-[#e2b96f] rounded-full text-xs border border-[#e2b96f]/20 hover:bg-[#e2b96f]/10 transition-colors duration-300 font-mono"
           >
             {tech}
           </span>
@@ -92,7 +92,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <button
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
-          className="inline-block bg-gradient-to-r from-red-600 to-red-800 text-white px-6 py-2 rounded-full hover:shadow-lg hover:shadow-red-900/20 transition-all duration-300"
+          className="inline-block bg-gradient-to-r from-[#e2b96f] to-[#fb7185] text-zinc-950 font-bold px-6 py-2 rounded-full hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-300 text-sm cursor-pointer"
         >
           View Project
         </button>
@@ -100,85 +100,85 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-gray-400 underline ml-2"
+          className="text-sm text-zinc-500 hover:text-white transition-colors underline ml-2"
         >
           Source
         </a>
       </div>
     </motion.div>
-
-      {/* Modal */}
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center"
-        >
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          />
-
-          <motion.div
-            initial={{ y: 20, scale: 0.98 }}
-            animate={{ y: 0, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-            className="relative z-10 w-[min(900px,95%)] max-h-[90vh] overflow-auto bg-gradient-to-br from-gray-900/95 to-black/95 rounded-2xl p-8 shadow-2xl border border-gray-800/40"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`${title} details`}
-          >
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
-              aria-label="Close dialog"
-            >
-              ✕
-            </button>
-
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex-shrink-0 md:w-1/2">
-                <div className="rounded-lg overflow-hidden bg-black/10">
-                  <img src={image} alt={title} className="w-full h-auto object-contain" />
-                </div>
-              </div>
-
-              <div className="md:flex-1">
-                <h3 className="text-2xl font-bold mb-3 premium-text">{title}</h3>
-                <p className="text-gray-300 mb-4">{description}</p>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {technologies.map((tech, i) => (
-                    <span key={i} className="px-3 py-1 bg-red-900/20 text-red-300 rounded-full text-sm border border-red-900/30">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex gap-3">
-                  <a
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-gradient-to-r from-red-600 to-red-800 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300"
-                  >
-                    View Code
-                  </a>
-
-                  <button
-                    disabled
-                    title="Live demo coming soon"
-                    className="inline-block bg-transparent border border-gray-700 text-gray-400 px-6 py-2 rounded-full cursor-not-allowed transition-all duration-300"
-                  >
-                    Live Demo — Coming Soon
-                  </button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
+ 
+       {/* Modal */}
+       {open && (
+         <motion.div
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           exit={{ opacity: 0 }}
+           className="fixed inset-0 z-50 flex items-center justify-center"
+         >
+           <div
+             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+             onClick={() => setOpen(false)}
+           />
+ 
+           <motion.div
+             initial={{ y: 20, scale: 0.98 }}
+             animate={{ y: 0, scale: 1 }}
+             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+             className="relative z-10 w-[min(900px,95%)] max-h-[90vh] overflow-auto bg-zinc-950/90 backdrop-blur-xl rounded-2xl p-8 shadow-[0_0_60px_rgba(0,0,0,0.8)] border border-white/10"
+             role="dialog"
+             aria-modal="true"
+             aria-label={`${title} details`}
+           >
+             <button
+               onClick={() => setOpen(false)}
+               className="absolute top-4 right-4 text-zinc-400 hover:text-white cursor-pointer"
+               aria-label="Close dialog"
+             >
+               ✕
+             </button>
+ 
+             <div className="flex flex-col md:flex-row gap-6">
+               <div className="flex-shrink-0 md:w-1/2">
+                 <div className="rounded-lg overflow-hidden bg-black/10">
+                   <img src={image} alt={title} className="w-full h-auto object-contain" />
+                 </div>
+               </div>
+ 
+               <div className="md:flex-1">
+                 <h3 className="text-2xl font-bold mb-3 premium-text">{title}</h3>
+                 <p className="text-zinc-300 text-sm mb-4 leading-relaxed">{description}</p>
+ 
+                 <div className="flex flex-wrap gap-2 mb-6">
+                   {technologies.map((tech, i) => (
+                     <span key={i} className="px-3 py-1 bg-[#e2b96f]/5 text-[#e2b96f] rounded-full text-xs border border-[#e2b96f]/20 font-mono">
+                       {tech}
+                     </span>
+                   ))}
+                 </div>
+ 
+                 <div className="flex gap-3">
+                   <a
+                     href={link}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="inline-block bg-gradient-to-r from-[#e2b96f] to-[#fb7185] text-zinc-950 font-bold px-6 py-2 rounded-full hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-300 text-sm"
+                   >
+                     View Code
+                   </a>
+ 
+                   <button
+                     disabled
+                     title="Live demo coming soon"
+                     className="inline-block bg-transparent border border-zinc-800 text-zinc-500 px-6 py-2 rounded-full cursor-not-allowed transition-all duration-300 text-sm"
+                   >
+                     Live Demo — Coming Soon
+                   </button>
+                 </div>
+               </div>
+             </div>
+           </motion.div>
+         </motion.div>
+       )}
     </>
   );
 };

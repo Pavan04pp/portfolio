@@ -90,17 +90,29 @@ const AnimatedBackground: React.FC = () => {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: 'fixed',
-        top: 0, left: 0,
-        width: '100%', height: '100%',
-        zIndex: 0,
-        pointerEvents: 'none',
-        opacity: 0.5,
-      }}
-    />
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      zIndex: 0,
+      pointerEvents: 'none',
+      overflow: 'hidden',
+    }}>
+      {/* Drifting Ambient Glassmorphic Glows */}
+      <div className="ambient-glow glow-gold" style={{ top: '10%', left: '5%', width: '45vw', height: '45vw' }} />
+      <div className="ambient-glow glow-violet" style={{ top: '40%', right: '5%', width: '50vw', height: '50vw' }} />
+      <div className="ambient-glow glow-rose" style={{ bottom: '5%', left: '20%', width: '40vw', height: '40vw' }} />
+
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          opacity: 0.4,
+        }}
+      />
+    </div>
   );
 };
 

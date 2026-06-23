@@ -40,53 +40,71 @@ const Navbar: React.FC = () => {
 
   return (
     <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-      backdropFilter: 'blur(20px) saturate(1.2)',
-      WebkitBackdropFilter: 'blur(20px) saturate(1.2)',
-      background: scrolled ? 'rgba(9,9,11,0.85)' : 'rgba(9,9,11,0.4)',
-      borderBottom: `1px solid ${scrolled ? 'rgba(255,255,255,0.06)' : 'transparent'}`,
-      transition: 'all 0.4s ease',
+      position: 'fixed', 
+      top: '1.25rem', 
+      left: '50%', 
+      transform: 'translateX(-50%)',
+      width: 'calc(100% - 2.5rem)', 
+      maxWidth: 1200, 
+      zIndex: 1000,
+      backdropFilter: 'blur(24px) saturate(1.3)',
+      WebkitBackdropFilter: 'blur(24px) saturate(1.3)',
+      background: scrolled ? 'rgba(17,17,19,0.75)' : 'rgba(17,17,19,0.3)',
+      border: '1px solid rgba(255, 255, 255, 0.08)',
+      borderRadius: '999px',
+      boxShadow: scrolled ? '0 20px 40px rgba(0, 0, 0, 0.5)' : 'none',
+      transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
     }}>
       <div style={{
-        maxWidth: 1200, margin: '0 auto', padding: '0 1.5rem',
-        display: 'flex', alignItems: 'center', height: 64, gap: '2rem'
+        padding: '0 1.5rem',
+        display: 'flex', alignItems: 'center', height: 56, gap: '2rem',
+        justifyContent: 'space-between'
       }}>
 
         {/* Logo */}
         <a href="#home" style={{
-          fontFamily: 'var(--font-head)', fontWeight: 800, fontSize: '1.3rem',
+          fontFamily: 'var(--font-head)', fontWeight: 800, fontSize: '1.2rem',
           background: 'linear-gradient(135deg, var(--accent), var(--rose))',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           backgroundClip: 'text', textDecoration: 'none', flexShrink: 0,
         }}>PK</a>
 
-        {/* Center nav links */}
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '2rem' }}
+        {/* Center nav links styled as premium pill buttons */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.4rem' }}
           className="nav-links-desktop">
-          {navItems.map(it => (
-            <a key={it.name} href={it.href} style={{
-              fontFamily: 'var(--font-mono)', fontSize: '0.6rem',
-              letterSpacing: '0.18em', textTransform: 'uppercase',
-              color: active === it.name ? 'var(--text)' : 'var(--muted)',
-              textDecoration: 'none',
-              transition: 'color 0.3s',
-              position: 'relative',
-              paddingBottom: '4px',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = active === it.name ? 'var(--text)' : 'var(--muted)'; }}
-            >
-              {it.name}
-              <span style={{
-                position: 'absolute',
-                bottom: 0, left: '50%', transform: 'translateX(-50%)',
-                width: active === it.name ? '100%' : '0%',
-                height: '1px',
-                background: 'var(--accent)',
-                transition: 'width 0.3s cubic-bezier(0.16,1,0.3,1)',
-              }} />
-            </a>
-          ))}
+          {navItems.map(it => {
+            const isActive = active === it.name;
+            return (
+              <a key={it.name} href={it.href} style={{
+                fontFamily: 'var(--font-mono)', fontSize: '0.62rem',
+                letterSpacing: '0.12em', textTransform: 'uppercase',
+                color: isActive ? 'var(--text)' : 'var(--text-dim)',
+                textDecoration: 'none',
+                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                padding: '0.45rem 1rem',
+                borderRadius: '999px',
+                background: isActive ? 'rgba(226,185,111,0.1)' : 'transparent',
+                border: `1px solid ${isActive ? 'rgba(226,185,111,0.2)' : 'transparent'}`,
+              }}
+                onMouseEnter={e => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = 'var(--text)';
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = 'var(--text-dim)';
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderColor = 'transparent';
+                  }
+                }}
+              >
+                {it.name}
+              </a>
+            );
+          })}
         </div>
 
         {/* Availability */}
@@ -102,30 +120,42 @@ const Navbar: React.FC = () => {
         {/* Mobile hamburger */}
         <button onClick={() => setOpen(o => !o)} style={{
           display: 'none', background: 'none', border: 'none',
-          color: 'var(--muted)', fontSize: '1.3rem', padding: '0.25rem',
+          color: 'var(--text-dim)', fontSize: '1.2rem', padding: '0.25rem',
+          cursor: 'pointer',
         }} className="nav-hamburger">☰</button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Floating mobile dropdown menu */}
       {open && (
         <div style={{
-          background: 'rgba(9,9,11,0.97)', padding: '1.5rem',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex', flexDirection: 'column', gap: '1rem',
+          position: 'absolute', top: '70px', left: 0, right: 0,
+          background: 'rgba(17,17,19,0.95)', padding: '1rem',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '24px',
+          backdropFilter: 'blur(20px)',
+          display: 'flex', flexDirection: 'column', gap: '0.5rem',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
         }}>
-          {navItems.map(it => (
-            <a key={it.name} href={it.href}
-              onClick={() => setOpen(false)}
-              style={{
-                fontFamily: 'var(--font-mono)', fontSize: '0.7rem',
-                letterSpacing: '0.15em', textTransform: 'uppercase',
-                color: active === it.name ? 'var(--text)' : 'var(--muted)',
-                textDecoration: 'none',
-                padding: '0.4rem 0',
-              }}>
-              {it.name}
-            </a>
-          ))}
+          {navItems.map(it => {
+            const isActive = active === it.name;
+            return (
+              <a key={it.name} href={it.href}
+                onClick={() => setOpen(false)}
+                style={{
+                  fontFamily: 'var(--font-mono)', fontSize: '0.68rem',
+                  letterSpacing: '0.12em', textTransform: 'uppercase',
+                  color: isActive ? 'var(--text)' : 'var(--text-dim)',
+                  textDecoration: 'none',
+                  padding: '0.6rem 1.2rem',
+                  borderRadius: '999px',
+                  background: isActive ? 'rgba(226,185,111,0.1)' : 'transparent',
+                  border: `1px solid ${isActive ? 'rgba(226,185,111,0.15)' : 'transparent'}`,
+                  transition: 'all 0.2s',
+                }}>
+                {it.name}
+              </a>
+            );
+          })}
         </div>
       )}
 

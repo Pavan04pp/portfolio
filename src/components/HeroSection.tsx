@@ -198,16 +198,19 @@ const HeroSection: React.FC = () => {
                     <a href="#contact" className="btn-outlined">Get In Touch</a>
                 </div>
 
-                {/* Stats bar */}
+                {/* Stats bar (Glassmorphic HUD) */}
                 <div style={{
                     display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    background: 'rgba(17, 17, 19, 0.45)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: 16,
                     maxWidth: 520,
                     opacity: visible ? 1 : 0,
                     transform: visible ? 'none' : 'translateY(20px)',
                     transition: 'opacity 0.8s ease 0.7s, transform 0.8s ease 0.7s',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
                 }}>
                     {STATS.map((s, i) => (
                         <StatItem key={s.label} stat={s} active={visible} delay={700 + i * 200} idx={i} />
