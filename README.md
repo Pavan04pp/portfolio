@@ -34,7 +34,7 @@ I’m **Pavan Kumar**, a passionate **AI/ML Engineer** with a strong background 
 ## 📫 Contact
 
 - **Website:** [pavan04pp.github.io/portfolio](https://pavan04pp.github.io/portfolio)
-- **GitHub:** [github.com/Pavan04pp](https://github.com/Pavan04pp)
+- **GitHub:** [github.com/Pavan04pp](https://github.com/Pavan04pp)Z
 - **LinkedIn:** [linkedin.com/in/pavankumar](https://www.linkedin.com/in/pavankumar)
 
 ---
