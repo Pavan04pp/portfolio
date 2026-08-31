@@ -3,18 +3,18 @@ import React, { useState, useEffect, useRef } from 'react';
 /* ─── Your Real Data (no API dependency) ───────────────────────────────── */
 const DATA = {
   username: 'Pavan04Codes',
-  totalSolved: 236,
+  totalSolved: 374,
   totalQuestions: 3255,
-  easySolved: 165,
-  easyTotal: 816,
-  mediumSolved: 65,
-  mediumTotal: 1698,
-  hardSolved: 6,
-  hardTotal: 741,
-  acceptance: 79,
-  ranking: 618235,
-  streakDays: 45,
-  contestsAttended: 8,
+  easySolved: 249,
+  easyTotal: 962,
+  mediumSolved: 117,
+  mediumTotal: 2109,
+  hardSolved: 9,
+  hardTotal: 970,
+  acceptance: 81.81,
+  ranking: 360,043,
+  streakDays: 82,
+  contestsAttended: 1,
 };
 
 /* ─── Animated SVG ring ────────────────────────────────────────────────── */
