@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-/* ─── Your Real Data (no API dependency) ───────────────────────────────── */
-const DATA = {
-  username: 'Pavan04Codes',
-  totalSolved: 374,
-  totalQuestions: 3255,
-  easySolved: 249,
-  easyTotal: 962,
-  mediumSolved: 117,
-  mediumTotal: 2109,
-  hardSolved: 9,
-  hardTotal: 970,
-  acceptance: 81.81,
-  ranking: 360,043,
-  streakDays: 82,
-  contestsAttended: 1,
+interface LeetCodeData {
+  username: 'Pavan04Codes';
+  totalSolved: number;
+  totalQuestions: number;
+  easySolved: number;
+  easyTotal: number;
+  mediumSolved: number;
+  mediumTotal: number;
+  hardSolved: number;
+  hardTotal: number;
+  acceptance: number;
+  ranking: number;
+  streakDays: number;
+  contestsAttended: number | null;
+  updatedAt?: string;
+}
+
+const FALLBACK_DATA: LeetCodeData = {
+  username: 'Pavan04Codes', totalSolved: 0, totalQuestions: 0,
+  easySolved: 0, easyTotal: 0, mediumSolved: 0, mediumTotal: 0,
+  hardSolved: 0, hardTotal: 0, acceptance: 0, ranking: 0,
+  streakDays: 0, contestsAttended: null,
 };
 
 /* ─── Animated SVG ring ────────────────────────────────────────────────── */
@@ -190,6 +197,24 @@ const Heatmap: React.FC<{ active: boolean }> = ({ active }) => {
 const LeetCodeStats: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [vis, setVis] = useState(false);
+  const [data, setData] = useState<LeetCodeData>(FALLBACK_DATA);
+  const [apiError, setApiError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/leetcode?username=Pavan04Codes')
+      .then((response) => {
+        if (!response.ok) throw new Error('LeetCode API unavailable');
+        return response.json() as Promise<LeetCodeData>;
+      })
+      .then((nextData) => {
+        if (!cancelled) setData(nextData);
+      })
+      .catch(() => {
+        if (!cancelled) setApiError(true);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.15 });
@@ -197,12 +222,12 @@ const LeetCodeStats: React.FC = () => {
     return () => obs.disconnect();
   }, []);
 
-  const d = DATA;
+  const d = data;
 
   const difficulties = [
-    { label: 'Easy', solved: d.easySolved, total: d.easyTotal, color: '#34d399', pct: (d.easySolved / d.easyTotal) * 100 },
-    { label: 'Medium', solved: d.mediumSolved, total: d.mediumTotal, color: '#e2b96f', pct: (d.mediumSolved / d.mediumTotal) * 100 },
-    { label: 'Hard', solved: d.hardSolved, total: d.hardTotal, color: '#fb7185', pct: (d.hardSolved / d.hardTotal) * 100 },
+    { label: 'Easy', solved: d.easySolved, total: d.easyTotal, color: '#34d399', pct: d.easyTotal ? (d.easySolved / d.easyTotal) * 100 : 0 },
+    { label: 'Medium', solved: d.mediumSolved, total: d.mediumTotal, color: '#e2b96f', pct: d.mediumTotal ? (d.mediumSolved / d.mediumTotal) * 100 : 0 },
+    { label: 'Hard', solved: d.hardSolved, total: d.hardTotal, color: '#fb7185', pct: d.hardTotal ? (d.hardSolved / d.hardTotal) * 100 : 0 },
   ];
 
   const highlights = [
@@ -295,7 +320,7 @@ const LeetCodeStats: React.FC = () => {
                 color: h.color,
               }}>
                 {h.label === 'Global Rank' ? '#' : ''}
-                <StatCounter value={h.value} suffix={h.suffix} active={vis} delay={500 + i * 120} />
+                {h.value === null ? 'N/A' : <StatCounter value={h.value} suffix={h.suffix} active={vis} delay={500 + i * 120} />}
               </p>
             </div>
           ))}
@@ -372,7 +397,7 @@ const LeetCodeStats: React.FC = () => {
             opacity: vis ? 1 : 0,
             transition: 'opacity 0.5s ease 1.5s',
           }}>
-            {d.totalSolved} submissions in the last 3 months
+            {apiError ? 'Live LeetCode data is temporarily unavailable' : `${d.totalSolved} accepted solutions currently tracked`}
           </p>
         </div>
       </div>
