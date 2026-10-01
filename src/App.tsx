@@ -14,6 +14,7 @@ import LeetCodeStats from './components/LeetCodeStats';
 import HeroSection from './components/HeroSection';
 import CustomCursor from './components/CustomCursor';
 import ScrollProgress from './components/ScrollProgress';
+import { PredictiveArcCanvas } from './shaders/predictive-arc/PredictiveArcCanvas';
 
 /* ─── Real Projects ─────────────────────────────────────────────────────── */
 const PROJECTS = [
@@ -149,6 +150,15 @@ const LeetCodeSection: React.FC = () => {
 const App: React.FC = () => (
   <div style={{ position: 'relative', minHeight: '100vh' }}>
     <AnimatedBackground />
+    <PredictiveArcCanvas
+      variant="predictive"
+      mode="dark"
+      speed={1.00}
+      hue={0}
+      saturation={1.00}
+      brightness={1.00}
+      className="site-predictive-arc"
+    />
     <CustomCursor />
     <Navbar />
     <ScrollProgress />

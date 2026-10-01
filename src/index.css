@@ -2,14 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+.threeui-background.predictive-arc {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #030303;
+}
+
+.threeui-background.predictive-arc > canvas {
+  opacity: 0.7;
+}
+
+.site-predictive-arc {
+  opacity: 0.72;
+}
+
 /* ─── Google Fonts are loaded via index.html ─────────────────────────────── */
 
 /* ─── Design Tokens — Luxury Warm Dark ───────────────────────────────────── */
 :root {
   --bg: #09090b;
-  --surface: #111113;
-  --surface2: #18181b;
-  --surface3: #1c1c20;
+  --surface: #151519;
+  --surface2: #1d1d23;
+  --surface3: #24242b;
 
   --accent: #e2b96f;
   /* champagne gold */
@@ -30,8 +46,8 @@
   --font-mono: 'Space Mono', monospace;
   --font-body: 'DM Sans', sans-serif;
 
-  --border: rgba(255, 255, 255, 0.06);
-  --border-hover: rgba(255, 255, 255, 0.12);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-hover: rgba(226, 185, 111, 0.36);
 }
 
 /* ─── Reset & Base ───────────────────────────────────────────────────────── */
@@ -151,10 +167,10 @@ h5 {
 .glass {
   background: 
     url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAxfSqyAAAAM1BMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj1473AAAADnRSTlMAESIzRFVmd4iZqru8zN159CwAAACWSURBVDjL7dJBDsAgCATB6P9/tKixRtBEEsfe9C7Zq6KqC5D4Bgg6XF16hM8L0w0+l096K6Qd3n2C61y6hF55BfeXh3R5C3eW21XU7K/iFnI/BfeRW6m91F5qL7WX2kvtpfZSe6m91F5qL7WX2kvtpfZSe6m91F5qL7WX2kvtpfZSe6m91F7q/7p/f0LdAw/m7j7hAAAAAElFTkSuQmCC"),
-    rgba(17, 17, 19, 0.8);
+    linear-gradient(145deg, rgba(36, 36, 43, 0.94), rgba(15, 15, 19, 0.9));
   backdrop-filter: blur(24px) saturate(1.3);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
   position: relative;
   transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.4s ease;
@@ -170,7 +186,7 @@ h5 {
 /* ─── Skill Cards ────────────────────────────────────────────────────────── */
 .skill-card {
   position: relative;
-  background: var(--surface);
+  background: linear-gradient(145deg, rgba(30, 30, 36, 0.96), rgba(14, 14, 18, 0.92));
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1.5rem;
@@ -207,10 +223,10 @@ h5 {
   position: relative;
   background: 
     url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAxfSqyAAAAM1BMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj1473AAAADnRSTlMAESIzRFVmd4iZqru8zN159CwAAACWSURBVDjL7dJBDsAgCATB6P9/tKixRtBEEsfe9C7Zq6KqC5D4Bgg6XF16hM8L0w0+l096K6Qd3n2C61y6hF55BfeXh3R5C3eW21XU7K/iFnI/BfeRW6m91F5qL7WX2kvtpfZSe6m91F5qL7WX2kvtpfZSe6m91F5qL7WX2kvtpfZSe6m91F7q/7p/f0LdAw/m7j7hAAAAAElFTkSuQmCC"),
-    rgba(17, 17, 19, 0.45);
+    linear-gradient(145deg, rgba(34, 34, 41, 0.94), rgba(14, 14, 18, 0.9));
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
   padding: 1.75rem;
   overflow: hidden;
@@ -405,10 +421,10 @@ h5 {
 .terminal {
   background: 
     url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAxfSqyAAAAM1BMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj1473AAAADnRSTlMAESIzRFVmd4iZqru8zN159CwAAACWSURBVDjL7dJBDsAgCATB6P9/tKixRtBEEsfe9C7Zq6KqC5D4Bgg6XF16hM8L0w0+l096K6Qd3n2C61y6hF55BfeXh3R5C3eW21XU7K/iFnI/BfeRW6m91F5qL7WX2kvtpfZSe6m91F5qL7WX2kvtpfZSe6m91F5qL7WX2kvtpfZSe6m91F7q/7p/f0LdAw/m7j7hAAAAAElFTkSuQmCC"),
-    rgba(17, 17, 19, 0.45);
+    linear-gradient(145deg, rgba(31, 31, 38, 0.96), rgba(12, 12, 16, 0.94));
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
   overflow: hidden;
   font-family: var(--font-mono);
@@ -562,10 +578,10 @@ button,
 }
 
 .glass-effect {
-  background: rgba(17, 17, 19, 0.6);
+  background: linear-gradient(145deg, rgba(34, 34, 41, 0.9), rgba(14, 14, 18, 0.86));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 /* ─── Mesh Gradient Orbs (ambient) ───────────────────────────────────────── */
